@@ -21,6 +21,7 @@ const reportQa = document.querySelector("#report-qa");
 const historyQuestionForm = document.querySelector("#history-question-form");
 const historyQuestion = document.querySelector("#history-question");
 const historyQa = document.querySelector("#history-qa");
+const historyStorageKey = "tech-care-report-history";
 
 const agents = [
   {
@@ -91,9 +92,8 @@ const agents = [
 
 let currentStep = 0;
 let flowRunning = false;
-let selectedHistoryId = "rpt-042";
 let runToken = 0;
-let historyReports = [
+const seedHistoryReports = [
   {
     id: "rpt-042",
     tag: "Completed",
@@ -122,6 +122,8 @@ let historyReports = [
     actions: ["Expose owner field in replies", "Add ETA bands", "Review warehouse handoff queue"]
   }
 ];
+let historyReports = loadHistoryReports();
+let selectedHistoryId = historyReports[0]?.id || "rpt-042";
 
 function setRoute(route) {
   pages.forEach((page) => page.classList.toggle("active-page", page.id === route));
@@ -135,7 +137,7 @@ function setRoute(route) {
 }
 
 function escapeHtml(value) {
-  return value.replace(/[&<>"']/g, (character) => {
+  return String(value).replace(/[&<>"']/g, (character) => {
     const entities = {
       "&": "&amp;",
       "<": "&lt;",
@@ -146,6 +148,70 @@ function escapeHtml(value) {
 
     return entities[character];
   });
+}
+
+function normalizeReport(report) {
+  const version = Number.isInteger(report.version) ? report.version : report.id === "rpt-live" ? 1 : null;
+
+  return {
+    id: typeof report.id === "string" ? report.id : `rpt-imported-${Date.now()}`,
+    tag: typeof report.tag === "string" ? report.tag : "Completed",
+    title: typeof report.title === "string" ? report.title : "Untitled report",
+    date: typeof report.date === "string" ? report.date : formatReportDate(),
+    summary: typeof report.summary === "string" ? report.summary : "No summary saved for this report.",
+    focus: typeof report.focus === "string" ? report.focus : "General support analysis",
+    actions: Array.isArray(report.actions) ? report.actions.filter((action) => typeof action === "string") : [],
+    version,
+    savedAt: typeof report.savedAt === "string" ? report.savedAt : null,
+    objective: typeof report.objective === "string" ? report.objective : ""
+  };
+}
+
+function loadHistoryReports() {
+  try {
+    const savedReports = window.localStorage.getItem(historyStorageKey);
+
+    if (!savedReports) {
+      return seedHistoryReports.map(normalizeReport);
+    }
+
+    const parsedReports = JSON.parse(savedReports);
+    const storedReports = Array.isArray(parsedReports) ? parsedReports.map(normalizeReport) : [];
+    const storedIds = new Set(storedReports.map((report) => report.id));
+    const missingSeedReports = seedHistoryReports.filter((report) => !storedIds.has(report.id)).map(normalizeReport);
+
+    return [...storedReports, ...missingSeedReports];
+  } catch (error) {
+    return seedHistoryReports.map(normalizeReport);
+  }
+}
+
+function persistHistoryReports() {
+  try {
+    window.localStorage.setItem(historyStorageKey, JSON.stringify(historyReports));
+  } catch (error) {
+    // History still works for the current session if browser storage is unavailable.
+  }
+}
+
+function formatReportDate(date = new Date()) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric"
+  }).format(date);
+}
+
+function getNextGeneratedVersion() {
+  return (
+    historyReports.reduce((highestVersion, report) => {
+      if (!Number.isInteger(report.version)) {
+        return highestVersion;
+      }
+
+      return Math.max(highestVersion, report.version);
+    }, 0) + 1
+  );
 }
 
 function addBubble(kind, speaker, message, target = chatStream) {
@@ -277,38 +343,44 @@ function cancelFlow() {
 }
 
 function saveGeneratedReport() {
-  const generatedId = "rpt-live";
-  const exists = historyReports.some((report) => report.id === generatedId);
-
-  if (exists) {
-    return;
-  }
+  const version = getNextGeneratedVersion();
+  const savedAt = new Date();
+  const objective = objectiveInput.value.trim() || "Run a Tech Care seller support analysis.";
 
   historyReports = [
     {
-      id: generatedId,
-      tag: "New",
+      id: `rpt-live-v${version}-${savedAt.getTime()}`,
+      tag: `Version ${version}`,
       title: "Tech Care seller support intelligence brief",
-      date: "Jun 11, 2026",
+      date: formatReportDate(savedAt),
       summary: "Live four-agent run covering payment, catalog, fulfillment, and seller sentiment signals.",
       focus: "Payments, catalog, fulfillment, returns, seller sentiment",
-      actions: ["Publish payment-status card", "Improve catalog rejection replies", "Create weekly unresolved-escalation digest"]
+      actions: ["Publish payment-status card", "Improve catalog rejection replies", "Create weekly unresolved-escalation digest"],
+      version,
+      savedAt: savedAt.toISOString(),
+      objective
     },
     ...historyReports
   ];
-  selectedHistoryId = generatedId;
+  selectedHistoryId = historyReports[0].id;
+  persistHistoryReports();
 }
 
 function renderHistory() {
   historyList.innerHTML = historyReports
     .map(
-      (report) => `
+      (report) => {
+        const tag = report.version ? `Version ${report.version}` : report.tag;
+        const meta = report.version ? `${report.date} - ${report.focus}` : `${report.date} - ${report.focus}`;
+
+        return `
       <button class="history-item ${report.id === selectedHistoryId ? "active" : ""}" type="button" data-history-id="${report.id}">
-        <span>${report.tag}</span>
-        <strong>${report.title}</strong>
-        <small>${report.date} - ${report.focus}</small>
+        <span>${escapeHtml(tag)}</span>
+        <strong>${escapeHtml(report.title)}</strong>
+        <small>${escapeHtml(meta)}</small>
       </button>
-    `
+    `;
+      }
     )
     .join("");
 
@@ -324,30 +396,34 @@ function renderHistory() {
 
 function renderHistoryDetail() {
   const report = historyReports.find((item) => item.id === selectedHistoryId) || historyReports[0];
+  const savedVersion = report.version ? `Version ${report.version}` : "Archived report";
+  const objectiveCopy = report.objective ? `<p><strong>Objective:</strong> ${escapeHtml(report.objective)}</p>` : "";
+
   historyDetail.innerHTML = `
     <p class="eyebrow">Opened report</p>
-    <h3>${report.title}</h3>
-    <p>${report.summary}</p>
+    <h3>${escapeHtml(report.title)}</h3>
+    <p>${escapeHtml(report.summary)}</p>
+    ${objectiveCopy}
     <div class="insight-grid">
       <div>
-        <span class="insight-label">Date</span>
-        <strong>${report.date}</strong>
-        <p>Archived from the Tech Care report history.</p>
+        <span class="insight-label">Saved version</span>
+        <strong>${escapeHtml(savedVersion)}</strong>
+        <p>${escapeHtml(report.date)}</p>
       </div>
       <div>
         <span class="insight-label">Focus</span>
-        <strong>${report.focus}</strong>
+        <strong>${escapeHtml(report.focus)}</strong>
         <p>Use the input below to ask AI for deeper context.</p>
       </div>
       <div>
         <span class="insight-label">Actions</span>
         <strong>${report.actions.length} recommended</strong>
-        <p>${report.actions[0]}</p>
+        <p>${escapeHtml(report.actions[0] || "No saved recommendation.")}</p>
       </div>
     </div>
     <h3>Saved recommendations</h3>
     <ol class="recommendations">
-      ${report.actions.map((action) => `<li>${action}</li>`).join("")}
+      ${report.actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}
     </ol>
   `;
 }
