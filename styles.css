@@ -996,6 +996,45 @@ input:focus {
   line-height: 1.7;
 }
 
+.iteration-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+}
+
+.iteration-card {
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.iteration-card span {
+  display: inline-flex;
+  margin-bottom: 0.6rem;
+  padding: 0.24rem 0.55rem;
+  color: var(--ink);
+  background: var(--noon-yellow-soft);
+  border: 1px solid rgba(17, 19, 24, 0.16);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.iteration-card h4 {
+  margin: 0 0 0.45rem;
+  letter-spacing: -0.02em;
+}
+
+.iteration-card ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.8rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
 .ask-card {
   align-self: start;
   position: sticky;

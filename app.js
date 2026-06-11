@@ -93,6 +93,7 @@ const agents = [
 let currentStep = 0;
 let flowRunning = false;
 let runToken = 0;
+let activeRunIterations = [];
 const seedHistoryReports = [
   {
     id: "rpt-042",
@@ -152,6 +153,12 @@ function escapeHtml(value) {
 
 function normalizeReport(report) {
   const version = Number.isInteger(report.version) ? report.version : report.id === "rpt-live" ? 1 : null;
+  const savedAt = typeof report.savedAt === "string" ? report.savedAt : null;
+  const iterations = normalizeIterations(report.iterations);
+  const savedIterations =
+    Number.isInteger(version) && iterations.length === 0
+      ? agents.map((agent, index) => createIterationSnapshot(agent, index, savedAt || new Date()))
+      : iterations;
 
   return {
     id: typeof report.id === "string" ? report.id : `rpt-imported-${Date.now()}`,
@@ -162,9 +169,28 @@ function normalizeReport(report) {
     focus: typeof report.focus === "string" ? report.focus : "General support analysis",
     actions: Array.isArray(report.actions) ? report.actions.filter((action) => typeof action === "string") : [],
     version,
-    savedAt: typeof report.savedAt === "string" ? report.savedAt : null,
-    objective: typeof report.objective === "string" ? report.objective : ""
+    savedAt,
+    objective: typeof report.objective === "string" ? report.objective : "",
+    iterations: savedIterations
   };
+}
+
+function normalizeIterations(iterations) {
+  if (!Array.isArray(iterations)) {
+    return [];
+  }
+
+  return iterations.map((iteration, index) => ({
+    id: typeof iteration.id === "string" ? iteration.id : `iteration-${index + 1}`,
+    version: Number.isInteger(iteration.version) ? iteration.version : index + 1,
+    agent: typeof iteration.agent === "string" ? iteration.agent : "Analysis agent",
+    step: typeof iteration.step === "string" ? iteration.step : `Iteration ${index + 1}`,
+    status: typeof iteration.status === "string" ? iteration.status : "Approved",
+    copy: typeof iteration.copy === "string" ? iteration.copy : "",
+    thoughts: Array.isArray(iteration.thoughts) ? iteration.thoughts.filter((thought) => typeof thought === "string") : [],
+    bullets: Array.isArray(iteration.bullets) ? iteration.bullets.filter((bullet) => typeof bullet === "string") : [],
+    approvedAt: typeof iteration.approvedAt === "string" ? iteration.approvedAt : null
+  }));
 }
 
 function loadHistoryReports() {
@@ -212,6 +238,23 @@ function getNextGeneratedVersion() {
       return Math.max(highestVersion, report.version);
     }, 0) + 1
   );
+}
+
+function createIterationSnapshot(agent, index, approvedAt = new Date()) {
+  const approvedDate = approvedAt instanceof Date ? approvedAt : new Date(approvedAt);
+  const approvedTime = Number.isNaN(approvedDate.getTime()) ? Date.now() : approvedDate.getTime();
+
+  return {
+    id: `iteration-${index + 1}-${approvedTime}`,
+    version: index + 1,
+    agent: agent.name,
+    step: agent.step,
+    status: "Approved",
+    copy: agent.copy,
+    thoughts: [...agent.thoughts],
+    bullets: [...agent.bullets],
+    approvedAt: new Date(approvedTime).toISOString()
+  };
 }
 
 function addBubble(kind, speaker, message, target = chatStream) {
@@ -305,6 +348,7 @@ function startFlow() {
   runToken += 1;
   currentStep = 0;
   flowRunning = true;
+  activeRunIterations = [];
   startFlowButton.disabled = true;
   chatStream.innerHTML = "";
   addBubble("user", "Reviewer", objectiveInput.value.trim() || "Run a Tech Care seller support analysis.");
@@ -332,6 +376,7 @@ function finishFlow() {
 function cancelFlow() {
   flowRunning = false;
   runToken += 1;
+  activeRunIterations = [];
   startFlowButton.disabled = false;
   checkpointCard.classList.add("hidden");
   runStatus.textContent = "Cancelled";
@@ -346,6 +391,10 @@ function saveGeneratedReport() {
   const version = getNextGeneratedVersion();
   const savedAt = new Date();
   const objective = objectiveInput.value.trim() || "Run a Tech Care seller support analysis.";
+  const iterations =
+    activeRunIterations.length > 0
+      ? activeRunIterations
+      : agents.map((agent, index) => createIterationSnapshot(agent, index, savedAt));
 
   historyReports = [
     {
@@ -358,7 +407,8 @@ function saveGeneratedReport() {
       actions: ["Publish payment-status card", "Improve catalog rejection replies", "Create weekly unresolved-escalation digest"],
       version,
       savedAt: savedAt.toISOString(),
-      objective
+      objective,
+      iterations
     },
     ...historyReports
   ];
@@ -398,6 +448,27 @@ function renderHistoryDetail() {
   const report = historyReports.find((item) => item.id === selectedHistoryId) || historyReports[0];
   const savedVersion = report.version ? `Version ${report.version}` : "Archived report";
   const objectiveCopy = report.objective ? `<p><strong>Objective:</strong> ${escapeHtml(report.objective)}</p>` : "";
+  const iterationHistory = report.iterations.length
+    ? `
+    <h3>Saved iterations</h3>
+    <div class="iteration-list">
+      ${report.iterations
+        .map(
+          (iteration) => `
+        <article class="iteration-card">
+          <span>Iteration ${escapeHtml(iteration.version)}</span>
+          <h4>${escapeHtml(iteration.step)}</h4>
+          <p>${escapeHtml(iteration.copy || iteration.agent)}</p>
+          <ul>
+            ${iteration.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}
+          </ul>
+        </article>
+      `
+        )
+        .join("")}
+    </div>
+  `
+    : "";
 
   historyDetail.innerHTML = `
     <p class="eyebrow">Opened report</p>
@@ -425,6 +496,7 @@ function renderHistoryDetail() {
     <ol class="recommendations">
       ${report.actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}
     </ol>
+    ${iterationHistory}
   `;
 }
 
@@ -490,6 +562,7 @@ startFlowButton.addEventListener("click", startFlow);
 approveButton.addEventListener("click", () => {
   const agent = agents[currentStep];
   addBubble("user", "Reviewer", `Approved ${agent.step}.`);
+  activeRunIterations = [...activeRunIterations, createIterationSnapshot(agent, currentStep)];
   currentStep += 1;
   updateStepIndicators();
 
