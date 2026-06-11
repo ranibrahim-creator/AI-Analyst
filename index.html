@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="grain"></div>
+    <div class="grid-overlay"></div>
     <div class="ambient ambient-one"></div>
     <div class="ambient ambient-two"></div>
 
@@ -36,11 +38,11 @@
       <section id="home" class="page active-page">
         <div class="hero-grid">
           <div class="hero-copy">
-            <p class="eyebrow">Noon-style support intelligence</p>
-            <h1>Tech Care AI analyst for customer support patterns.</h1>
+            <p class="eyebrow">Tech Care x noon intelligence</p>
+            <h1>Agentic CS analysis, shown like a living workspace.</h1>
             <p class="hero-text">
-              Launch a four-agent analysis squad that explains what it is thinking,
-              waits for human approval, and produces charts plus a final report.
+              A dark, minimalist command center where every agent explains what it is thinking,
+              waits for approval, then hands off charts and a long artifact-style report.
             </p>
             <div class="hero-actions">
               <button class="primary-action" type="button" data-start-analysis>
@@ -53,12 +55,15 @@
           </div>
 
           <div class="hero-orbit" aria-label="Animated AI analysis preview">
+            <div class="glass-shard shard-one"></div>
+            <div class="glass-shard shard-two"></div>
+            <div class="glass-shard shard-three"></div>
             <div class="pulse-ring ring-one"></div>
             <div class="pulse-ring ring-two"></div>
             <div class="bot-core">
               <span class="bot-dot"></span>
               <strong>Tech Care AI</strong>
-              <small>listening to tickets</small>
+              <small>building artifact</small>
             </div>
             <div class="orbit-card orbit-card-one">
               <span>01</span>
@@ -83,17 +88,17 @@
           <article class="home-card">
             <span class="card-number">4</span>
             <h3>Sequential AI agents</h3>
-            <p>Each agent has a visible checkpoint so the user can approve or cancel before the next step.</p>
+            <p>Plan, SQL, themes, and report agents move through a visible approval chain.</p>
           </article>
           <article class="home-card">
             <span class="card-number">Live</span>
             <h3>Thinking stream</h3>
-            <p>The UI behaves like an AI chat, surfacing progress notes instead of a silent loader.</p>
+            <p>The loading state becomes a compact AI thought stream with motion and status.</p>
           </article>
           <article class="home-card">
-            <span class="card-number">360</span>
-            <h3>Report workspace</h3>
-            <p>Analytics, final insight cards, history, and report follow-up questions live in one place.</p>
+            <span class="card-number">Doc</span>
+            <h3>Artifact output</h3>
+            <p>The final answer opens as a long article artifact with evidence and next actions.</p>
           </article>
         </div>
       </section>
@@ -108,10 +113,9 @@
             </p>
 
             <div class="request-card">
-              <label for="analysis-objective">Analysis objective</label>
+              <label for="analysis-objective">Prompt the analyst</label>
               <textarea id="analysis-objective" rows="6">
-Summarize seller support conversations, identify operational friction, and produce a leadership-ready Tech Care report.</textarea
-              >
+Summarize seller support conversations, identify operational friction, and produce a leadership-ready Tech Care artifact with charts, evidence, and recommendations.</textarea>
               <button class="primary-action full-width" type="button" data-start-flow>
                 Launch agent squad
               </button>
@@ -152,7 +156,7 @@ Summarize seller support conversations, identify operational friction, and produ
           <section class="agent-console" aria-live="polite">
             <div class="console-header">
               <div>
-                <p class="eyebrow">Agent console</p>
+                <p class="eyebrow">Claude-style workspace</p>
                 <h2 id="agent-title">Ready to launch</h2>
               </div>
               <span id="run-status" class="status-pill">Idle</span>
@@ -270,38 +274,106 @@ Summarize seller support conversations, identify operational friction, and produ
 
       <section id="report" class="page">
         <div class="report-shell">
-          <article class="report-card">
-            <p class="eyebrow">Final report</p>
-            <h2>Tech Care seller support intelligence brief</h2>
-            <p class="report-summary">
-              Sellers are most impacted by payment reconciliation delays, catalog rejection loops, and fulfillment handoff ambiguity.
-              The recommended operating move is a proactive issue digest paired with targeted workflow fixes.
-            </p>
-
-            <div class="insight-grid">
+          <article class="report-card artifact">
+            <div class="artifact-toolbar">
               <div>
-                <span class="insight-label">Priority theme</span>
-                <strong>Payment reconciliation</strong>
-                <p>High-volume sellers repeatedly ask for payout status clarity after invoice adjustments.</p>
+                <p class="eyebrow">AI artifact</p>
+                <h2>Tech Care seller support intelligence brief</h2>
               </div>
-              <div>
-                <span class="insight-label">Risk segment</span>
-                <strong>New marketplace sellers</strong>
-                <p>First 45-day sellers show higher confusion around SKU quality rules and support routing.</p>
-              </div>
-              <div>
-                <span class="insight-label">Best intervention</span>
-                <strong>Guided support macros</strong>
-                <p>Macros that include next action, owner, and expected timing reduce repeat contact intent.</p>
-              </div>
+              <span class="artifact-status">Generated by 4 agents</span>
             </div>
 
-            <h3>Recommended actions</h3>
-            <ol class="recommendations">
-              <li>Publish a payment-status explanation card inside the partner support journey.</li>
-              <li>Add catalog rejection examples to the first response for new seller tickets.</li>
-              <li>Create a weekly Tech Care digest for unresolved fulfillment and returns escalations.</li>
-            </ol>
+            <div class="artifact-meta">
+              <span>18,420 conversations</span>
+              <span>4-week lookback</span>
+              <span>Seller support</span>
+              <span>Confidence 94%</span>
+            </div>
+
+            <div class="artifact-body">
+              <section class="article-section">
+                <h3>Executive summary</h3>
+                <p>
+                  Tech Care should treat the current seller-support pattern as an operational clarity problem, not only a queue-volume problem.
+                  The highest-frequency conversations are clustered around payment reconciliation, catalog rejection loops, and fulfillment ownership.
+                  These topics create repeat contacts because sellers can see the issue, but cannot see the next owner, next action, or expected timing.
+                </p>
+                <p>
+                  The analysis suggests that the most effective response is a visible support-intelligence layer: clearer status messages,
+                  better first-response macros, and weekly unresolved-issue digests for the teams that own follow-through.
+                </p>
+              </section>
+
+              <section class="article-section">
+                <h3>What changed in the last four weeks</h3>
+                <div class="article-callout">
+                  Payment-related conversations are the clearest signal. They represent the largest share of contacts and show the strongest
+                  repeat-contact behavior when sellers ask about invoice adjustments, payout timing, and reconciliation proof.
+                </div>
+                <p>
+                  Catalog conversations remain highly concentrated among newer sellers. These sellers tend to ask multiple versions of the same
+                  question because the rejection reason is visible, but the expected fix is not specific enough. Fulfillment and returns create
+                  a different kind of friction: sellers often know that something is delayed, but they do not know whether support, warehouse,
+                  or courier operations owns the next step.
+                </p>
+              </section>
+
+              <section class="article-section">
+                <h3>Evidence by theme</h3>
+                <div class="evidence-grid">
+                  <div>
+                    <span class="insight-label">Priority theme</span>
+                    <strong>Payment reconciliation</strong>
+                    <p>High-volume sellers repeatedly ask for payout status clarity after invoice adjustments.</p>
+                  </div>
+                  <div>
+                    <span class="insight-label">Risk segment</span>
+                    <strong>New marketplace sellers</strong>
+                    <p>First 45-day sellers show higher confusion around SKU quality rules and support routing.</p>
+                  </div>
+                  <div>
+                    <span class="insight-label">Best intervention</span>
+                    <strong>Guided support macros</strong>
+                    <p>Macros that include next action, owner, and expected timing reduce repeat contact intent.</p>
+                  </div>
+                </div>
+              </section>
+
+              <section class="article-section">
+                <h3>Recommended operating moves</h3>
+                <ol class="recommendations">
+                  <li>
+                    Publish a payment-status explanation card inside the partner support journey, including payout ETA, invoice adjustment reason,
+                    and the finance owner responsible for the next update.
+                  </li>
+                  <li>
+                    Add catalog rejection examples to the first response for new seller tickets, with a before-and-after SKU example and the exact
+                    attribute that needs correction.
+                  </li>
+                  <li>
+                    Create a weekly Tech Care digest for unresolved fulfillment and returns escalations, grouped by queue owner and aging bucket.
+                  </li>
+                  <li>
+                    Track repeat-contact reduction by theme after each macro or help-center card launches. Use that as the main success metric,
+                    not just first-response time.
+                  </li>
+                </ol>
+              </section>
+
+              <section class="article-section">
+                <h3>Suggested narrative for leadership</h3>
+                <p>
+                  Seller support friction is being driven by uncertainty after an issue is already known. The seller does not need more generic
+                  reassurance; they need a precise answer that explains what happened, who owns the next step, and when the next update should
+                  arrive. Tech Care can reduce avoidable repeat contacts by turning the agent response into a status artifact.
+                </p>
+                <p>
+                  The four-agent workflow should continue to be used as a reviewable pipeline: planning validates scope, SQL validates evidence,
+                  themes validate interpretation, and the final report packages the decision. Keeping approvals between stages makes the output
+                  safer while still making the interface feel fast and intelligent.
+                </p>
+              </section>
+            </div>
           </article>
 
           <aside class="ask-card">

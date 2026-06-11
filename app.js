@@ -28,11 +28,11 @@ const agents = [
     step: "Plan review",
     status: "Mapping objective",
     thoughts: [
-      "I am reading the Tech Care objective and isolating the seller-support outcome.",
-      "I am turning the request into a safe sampling plan with human-readable assumptions.",
-      "I am checking that the report will include operational owners, not just ticket counts."
+      "I am reading the Tech Care prompt and deciding what evidence belongs in the artifact.",
+      "I am turning the request into a checkpointed plan with assumptions the reviewer can approve.",
+      "I am shaping the final article so it includes owners, timing, and action language."
     ],
-    copy: "The plan agent proposes a support-intelligence scope before any query work starts.",
+    copy: "The plan agent proposes the artifact scope before any query work starts.",
     bullets: [
       "Target conversations: seller support tickets, help-center chat, escalation notes.",
       "Primary lens: payment, catalog, fulfillment, returns, ads, and onboarding friction.",
@@ -45,7 +45,7 @@ const agents = [
     status: "Designing query",
     thoughts: [
       "I am drafting the query shape for ticket volume, resolution time, and escalation join paths.",
-      "I am adding date-window and seller-segment filters so the charts stay explainable.",
+      "I am choosing metrics that can feed both charts and a written support narrative.",
       "I am flagging fields that need human review before extraction proceeds."
     ],
     copy: "The SQL agent translates the approved plan into an auditable extraction strategy.",
@@ -61,8 +61,8 @@ const agents = [
     status: "Clustering themes",
     thoughts: [
       "I am grouping repeated seller pain points into measurable service themes.",
-      "I am separating sentiment from urgency so noisy messages do not dominate the report.",
-      "I am comparing the top themes against recent support macro usage."
+      "I am separating sentiment from urgency so noisy messages do not dominate the artifact.",
+      "I am comparing the top themes against recent support macro usage and repeat-contact patterns."
     ],
     copy: "The themes agent prepares the qualitative layer that explains why the metrics moved.",
     bullets: [
@@ -76,15 +76,15 @@ const agents = [
     step: "Report approval",
     status: "Composing report",
     thoughts: [
-      "I am converting metrics and themes into a leadership-ready narrative.",
+      "I am converting metrics and themes into a long artifact-style article.",
       "I am ranking recommendations by operational impact and clarity for Tech Care owners.",
-      "I am preparing the analytics preview before the final report opens."
+      "I am preparing the analytics preview before the final artifact opens."
     ],
-    copy: "The report agent is ready to hand off charts and the final Tech Care intelligence brief.",
+    copy: "The report agent is ready to hand off charts and the final Tech Care artifact.",
     bullets: [
-      "Include executive summary, key risks, evidence, and recommended support actions.",
+      "Include executive summary, key risks, evidence, narrative interpretation, and recommended support actions.",
       "Show chart preview before the written report so reviewers can validate the signal.",
-      "Save the completed report into history for follow-up questions."
+      "Save the completed artifact into history for follow-up questions."
     ]
   }
 ];
@@ -257,7 +257,7 @@ function finishFlow() {
   addBubble(
     "agent",
     "Tech Care AI",
-    "All checkpoints are approved. I prepared the analytics layer before opening the final report."
+    "All checkpoints are approved. I prepared the analytics layer before opening the final artifact."
   );
   saveGeneratedReport();
   setTimeout(() => setRoute("analytics"), 650);
@@ -290,7 +290,7 @@ function saveGeneratedReport() {
       tag: "New",
       title: "Tech Care seller support intelligence brief",
       date: "Jun 11, 2026",
-      summary: "Live four-agent run covering payment, catalog, fulfillment, and seller sentiment signals.",
+      summary: "Live four-agent artifact covering payment, catalog, fulfillment, seller sentiment, evidence, and recommendations.",
       focus: "Payments, catalog, fulfillment, returns, seller sentiment",
       actions: ["Publish payment-status card", "Improve catalog rejection replies", "Create weekly unresolved-escalation digest"]
     },
