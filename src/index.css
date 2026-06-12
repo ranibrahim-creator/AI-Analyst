@@ -135,27 +135,22 @@
 
   .noon-idle,
   .noon-face,
-  .noon-eye-draw,
-  .noon-smile-draw {
+  .noon-bowl,
+  .noon-dot,
+  .noon-wink {
     transition: none;
     animation: none !important;
   }
 }
 
-/* Noon logo → winking face: lines draw in on hover */
-.noon-eye-draw,
-.noon-smile-draw {
+/* Noon logo → wink: same glyph morphs, wink line draws in */
+.noon-wink {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
 }
 
-.noon-logo:hover .noon-eye-draw,
-.noon-logo:hover .noon-smile-draw {
-  animation: noon-line-draw 480ms ease-in-out forwards;
-}
-
-.noon-logo:hover .noon-face {
-  animation: noon-face-pop 600ms ease-in-out forwards;
+.noon-logo:hover .noon-wink {
+  animation: noon-line-draw 450ms ease-in-out 120ms forwards;
 }
 
 @keyframes noon-line-draw {
@@ -164,18 +159,6 @@
   }
   to {
     stroke-dashoffset: 0;
-  }
-}
-
-@keyframes noon-face-pop {
-  0% {
-    transform: scale(0.92);
-  }
-  55% {
-    transform: scale(1.04);
-  }
-  100% {
-    transform: scale(1);
   }
 }
 

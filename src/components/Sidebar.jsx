@@ -42,11 +42,13 @@ function PanelToggleIcon({ collapsed }) {
 
 function ProductBrand({ compact = false }) {
   return (
-    <div className={`min-w-0 ${compact ? "" : "px-1"}`}>
+    <div className={`min-w-0 leading-none ${compact ? "" : "px-1"}`}>
       <div className={`font-semibold leading-tight text-ink ${compact ? "text-[12px]" : "text-[13px]"}`}>
         AI Analyst
       </div>
-      <div className={`leading-tight text-ink-muted ${compact ? "text-[10px]" : "text-[11px]"}`}>Tech Care</div>
+      <div className={`mt-0.5 leading-tight text-ink-muted ${compact ? "text-[10px]" : "text-[11px]"}`}>
+        Tech Care
+      </div>
     </div>
   );
 }
@@ -129,15 +131,15 @@ export default function Sidebar({
       }`}
     >
       <div className={`flex h-full min-w-[248px] flex-col px-2 py-2 ${collapsed ? "invisible" : ""}`}>
-        {/* Product brand + collapse toggle — top-aligned */}
-        <div className="mb-2 flex items-start justify-between gap-2 px-1">
+        {/* Product brand + collapse toggle — tops aligned */}
+        <div className="mb-2 flex items-start justify-between gap-2 px-1 pt-0.5">
           <ProductBrand />
           <button
             type="button"
             onClick={onToggleCollapse}
             data-sidebar-toggle
             aria-label="Collapse sidebar"
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-black/[0.05]"
+            className="-mt-px grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-black/[0.05]"
           >
             <PanelToggleIcon collapsed={false} />
           </button>
@@ -172,7 +174,10 @@ export default function Sidebar({
                       active ? "bg-black/[0.06] text-ink" : "text-ink-soft hover:bg-black/[0.04] hover:text-ink"
                     }`}
                   >
-                    <span data-history-dot className="h-1 w-1 shrink-0 rounded-full bg-ink-muted" />
+                    <span
+                      data-history-dot
+                      className={`h-1 w-1 shrink-0 rounded-full ${active ? "bg-ink" : "bg-ink-muted"}`}
+                    />
                     <span className="truncate">{report.title}</span>
                   </button>
                 );
@@ -194,13 +199,13 @@ export default function Sidebar({
 
 export function SidebarExpandButton({ onClick }) {
   return (
-    <div className="absolute left-3 top-3 z-30 flex items-start gap-2.5">
+    <div className="absolute left-3 top-3 z-30 flex items-start gap-2 px-0 pt-0.5">
       <button
         type="button"
         onClick={onClick}
         data-sidebar-expand
         aria-label="Expand sidebar"
-        className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-black/[0.08] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors hover:bg-black/[0.02]"
+        className="-mt-px grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-black/[0.05]"
       >
         <PanelToggleIcon collapsed />
       </button>

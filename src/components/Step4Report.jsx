@@ -20,6 +20,7 @@ export default function Step4Report({ report, qa = [], pending = false, editable
         <span className="text-[12px] font-medium text-ink-muted">{report.tag}</span>
         {editable ? (
           <Editable
+            key={`title-${report.id}`}
             as="h2"
             value={val("title", report.title)}
             onChange={(v) => onEdit?.("title", v)}
@@ -47,7 +48,7 @@ export default function Step4Report({ report, qa = [], pending = false, editable
                 const key = fieldKey(si, pi);
                 return editable ? (
                   <Editable
-                    key={key}
+                    key={`${report.id}-${key}`}
                     as="p"
                     value={val(key, p)}
                     onChange={(v) => onEdit?.(key, v)}
@@ -72,7 +73,13 @@ export default function Step4Report({ report, qa = [], pending = false, editable
                 <li key={key} className="flex gap-3 text-[15px] leading-relaxed text-ink-soft">
                   <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-noon" />
                   {editable ? (
-                    <Editable as="span" value={val(key, r)} onChange={(v) => onEdit?.(key, v)} className="leading-relaxed" />
+                    <Editable
+                      key={`${report.id}-${key}`}
+                      as="span"
+                      value={val(key, r)}
+                      onChange={(v) => onEdit?.(key, v)}
+                      className="leading-relaxed"
+                    />
                   ) : (
                     <span>{r}</span>
                   )}
