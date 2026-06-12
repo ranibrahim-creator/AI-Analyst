@@ -67,11 +67,9 @@ export default function Composer({
 
   if (mode === "approval") {
     return (
-      <div className="rounded-2xl bg-white px-5 py-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]">
-        <p className="status-pulse text-center text-[13px] font-medium leading-relaxed text-ink-soft">
-          {statusMessage}
-        </p>
-      </div>
+      <p className="px-2 py-2 text-center text-[13px] font-medium leading-relaxed text-ink-soft">
+        {statusMessage}
+      </p>
     );
   }
 
