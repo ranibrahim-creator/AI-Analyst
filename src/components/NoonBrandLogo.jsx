@@ -1,9 +1,9 @@
 import AmbientBlob from "./AmbientBlob.jsx";
 
-// Yellow stroke Noon mark → on hover morphs into a minimalist winking face.
+// Authentic Arabic noon (ن) glyph → hover reveals the winking face animation.
 export default function NoonBrandLogo({ className = "", size = "hero" }) {
   const dim = size === "hero" ? "h-[80px] w-[80px]" : "h-9 w-9";
-  const sw = size === "hero" ? 6 : 3.5;
+  const sw = size === "hero" ? 5.5 : 3.2;
   const eye = size === "hero" ? 4.5 : 2.8;
 
   return (
@@ -11,24 +11,20 @@ export default function NoonBrandLogo({ className = "", size = "hero" }) {
       {size === "hero" && <AmbientBlob mode="idle" className="absolute -inset-8 opacity-80" />}
 
       <svg viewBox="0 0 80 80" className={`relative ${dim}`} aria-hidden>
-        <g fill="none" stroke="#FEEE00" strokeLinecap="round" strokeLinejoin="round">
-          {/* ── Idle: noon glyph (arc + top tick) ── */}
-          <g className="noon-idle transition-all duration-[600ms] ease-in-out group-hover:scale-[0.88] group-hover:opacity-0">
-            <path
-              d="M50 20 A28 28 0 1 0 50 60"
-              strokeWidth={sw}
-              className="origin-[40px_40px] transition-transform duration-[600ms] ease-in-out group-hover:translate-y-[10px] group-hover:rotate-[8deg]"
-            />
-            <path
-              d="M24 28 L31 21"
-              strokeWidth={sw}
-              className="origin-[27px_24px] transition-transform duration-[600ms] ease-in-out group-hover:translate-x-[1px] group-hover:translate-y-[6px] group-hover:rotate-[12deg]"
-            />
-          </g>
+        {/* ── Idle: official noon ن (bowl + diamond dot) ── */}
+        <g
+          className="noon-idle transition-all duration-[600ms] ease-in-out group-hover:scale-[0.9] group-hover:opacity-0"
+          fill="#23211d"
+        >
+          {/* Bowl — thick arc, flat right end, slanted left end */}
+          <path d="M 16.5 46.5 L 21 41.5 C 21 25.5, 59 25.5, 59 41.5 L 59 46.5 C 59 30.5, 21 30.5, 21 46.5 Z" />
+          {/* Dot — tilted diamond above the opening */}
+          <path d="M 33.5 19.5 L 43 15 L 47.5 23.5 L 38 28 Z" />
+        </g>
 
-          {/* ── Hover: winking face (same yellow line weight) ── */}
+        {/* ── Hover: winking face (yellow strokes) ── */}
+        <g fill="none" stroke="#FEEE00" strokeLinecap="round" strokeLinejoin="round">
           <g className="noon-face opacity-0 transition-opacity duration-[600ms] ease-in-out group-hover:opacity-100">
-            {/* Left eye */}
             <path
               d="M27 33 V39"
               strokeWidth={eye}
@@ -36,7 +32,6 @@ export default function NoonBrandLogo({ className = "", size = "hero" }) {
               className="noon-eye-draw"
               style={{ animationDelay: "80ms" }}
             />
-            {/* Winking right eye */}
             <path
               d="M44 34 Q50 38 56 34"
               strokeWidth={eye}
@@ -44,10 +39,9 @@ export default function NoonBrandLogo({ className = "", size = "hero" }) {
               className="noon-eye-draw"
               style={{ animationDelay: "160ms" }}
             />
-            {/* Smile — arc settles into mouth */}
             <path
               d="M22 51 Q40 63 58 51"
-              strokeWidth={sw - 0.5}
+              strokeWidth={sw}
               pathLength="1"
               className="noon-smile-draw"
             />
