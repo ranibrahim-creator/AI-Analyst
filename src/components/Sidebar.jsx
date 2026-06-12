@@ -1,24 +1,53 @@
-// Borderless sidebar. Holds only the squad identity ("Tech Care") and the
-// historical report logs. No "Analytics" entry.
+// Borderless sidebar: noon wordmark, a primary "New analysis" button,
+// historical report logs with solid status dots, and the user profile.
 
-export default function Sidebar({ history, activeReportId, onNew, onOpen }) {
+const STATUS_DOT = {
+  New: "bg-noon",
+  Payments: "bg-[#3276ff]",
+  Onboarding: "bg-ink",
+  Fulfillment: "bg-ink-muted",
+};
+
+function NoonLogo() {
+  // Clean vector "noon" wordmark with the signature smile under the middle.
+  return (
+    <svg viewBox="0 0 132 44" className="h-7 w-auto" role="img" aria-label="noon">
+      <text
+        x="0"
+        y="32"
+        fontFamily="Inter, sans-serif"
+        fontSize="34"
+        fontWeight="700"
+        letterSpacing="-1.5"
+        fill="#23211d"
+      >
+        noon
+      </text>
+      <path
+        d="M40 36 q24 12 48 0"
+        fill="none"
+        stroke="#FEEE00"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export default function Sidebar({ history, activeReportId, userName, onNew, onOpen }) {
   return (
     <aside className="flex h-screen w-72 shrink-0 flex-col gap-6 px-4 py-6">
-      {/* Squad identity */}
-      <div className="flex items-center gap-3 px-2">
-        <span className="grid h-9 w-9 place-items-center rounded-lg bg-noon text-[17px] font-bold text-ink">
-          n
-        </span>
-        <div className="leading-tight">
-          <div className="text-[15px] font-semibold text-ink">Tech Care</div>
-          <div className="text-[12px] text-ink-muted">noon · CS analyst squad</div>
-        </div>
+      {/* Branding */}
+      <div className="flex items-baseline gap-2 px-2">
+        <NoonLogo />
+        <span className="text-[12px] font-medium text-ink-muted">Tech Care</span>
       </div>
 
+      {/* Primary action button */}
       <button
         type="button"
         onClick={onNew}
-        className="flex items-center gap-2 rounded-lg px-2 py-2 text-left text-[14px] font-medium text-ink-soft transition-colors hover:bg-black/[0.04] hover:text-ink"
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-[14px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
       >
         <span className="text-noon">+</span> New analysis
       </button>
@@ -29,20 +58,17 @@ export default function Sidebar({ history, activeReportId, onNew, onOpen }) {
         <div className="flex-1 space-y-0.5 overflow-y-auto">
           {history.map((report) => {
             const active = report.id === activeReportId;
+            const dot = STATUS_DOT[report.tag] || "bg-ink-muted";
             return (
               <button
                 key={report.id}
                 type="button"
                 onClick={() => onOpen(report.id)}
-                className={`group flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-[13px] transition-colors ${
+                className={`group flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left text-[13px] transition-colors ${
                   active ? "bg-black/[0.05] text-ink" : "text-ink-soft hover:bg-black/[0.03] hover:text-ink"
                 }`}
               >
-                <span
-                  className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-                    active ? "bg-noon" : "bg-transparent ring-1 ring-inset ring-ink-faint/50 group-hover:bg-ink-faint"
-                  }`}
-                />
+                <span className={`h-2 w-2 shrink-0 rounded-full ${active ? "bg-noon" : dot}`} />
                 <span className="truncate">{report.title}</span>
               </button>
             );
@@ -50,12 +76,14 @@ export default function Sidebar({ history, activeReportId, onNew, onOpen }) {
         </div>
       </div>
 
-      {/* Footer identity */}
-      <div className="flex items-center gap-3 px-2 pt-2 text-[12px] text-ink-muted">
-        <span className="h-7 w-7 rounded-full bg-gradient-to-br from-noon to-[#c9bb00]" />
+      {/* User profile */}
+      <div className="flex items-center gap-3 px-2 pt-2">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-[13px] font-semibold text-white">
+          {userName.slice(0, 1).toUpperCase()}
+        </span>
         <div className="leading-tight">
-          <div className="font-medium text-ink-soft">Tech Care squad</div>
-          <div>4-agent pipeline</div>
+          <div className="text-[13px] font-medium text-ink">{userName}</div>
+          <div className="text-[11px] text-ink-muted">Tech Care squad</div>
         </div>
       </div>
     </aside>

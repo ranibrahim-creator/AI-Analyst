@@ -11,20 +11,6 @@
   body {
     @apply bg-canvas text-ink font-sans antialiased;
   }
-
-  /* Inline-editable rich outputs (Steps 2-4) */
-  [contenteditable="true"] {
-    @apply rounded-md outline-none transition-colors;
-  }
-
-  [contenteditable="true"]:hover {
-    @apply bg-black/[0.03];
-  }
-
-  [contenteditable="true"]:focus {
-    @apply bg-black/[0.04];
-    box-shadow: -10px 0 0 rgba(254, 238, 0, 0.55);
-  }
 }
 
 /* Thin, low-contrast scrollbars to match the minimalist canvas */
@@ -41,4 +27,89 @@
 *::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.16);
   border-radius: 9999px;
+}
+
+/* ----------------------------------------------------------------------------
+   Ambient AI blob — fluid, gaseous aura built from layered radial gradients.
+   Bright white core blending out into a soft wash of Noon Yellow (#FEEE00).
+   Heavy blur + multiply blend keeps it a soft whisper, never a neon shape.
+---------------------------------------------------------------------------- */
+.ai-aura {
+  position: absolute;
+  inset: -12%;
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  filter: blur(40px);
+  mix-blend-mode: multiply;
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      #ffffff 0%,
+      rgba(255, 255, 255, 0.85) 16%,
+      rgba(254, 238, 0, 0.55) 42%,
+      rgba(254, 238, 0, 0.12) 66%,
+      rgba(254, 238, 0, 0) 78%
+    );
+  will-change: transform;
+}
+
+/* A second, offset layer adds depth and organic drift */
+.ai-aura--secondary {
+  inset: 4%;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(
+      circle at 38% 60%,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.3) 30%,
+      rgba(254, 238, 0, 0.18) 55%,
+      rgba(254, 238, 0, 0) 75%
+    );
+  opacity: 0.8;
+}
+
+/* State A — Idle / Ambient: slow shifting liquid aura */
+.ai-aura--idle {
+  animation: aura-idle 12s ease-in-out infinite;
+}
+
+.ai-aura--idle.ai-aura--secondary {
+  animation: aura-idle 16s ease-in-out infinite reverse;
+}
+
+/* State B — Agent thinking: faster floating breathing pulse */
+.ai-aura--think {
+  animation: aura-think 3s ease-in-out infinite;
+}
+
+.ai-aura--think.ai-aura--secondary {
+  animation: aura-think 3.6s ease-in-out infinite reverse;
+}
+
+@keyframes aura-idle {
+  0% {
+    transform: rotate(0deg) scale(0.98);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.02);
+  }
+  100% {
+    transform: rotate(360deg) scale(0.98);
+  }
+}
+
+@keyframes aura-think {
+  0%,
+  100% {
+    transform: translateY(-4px) scale(1.04) rotate(0deg);
+  }
+  50% {
+    transform: translateY(4px) scale(1.12) rotate(180deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-aura--idle,
+  .ai-aura--think {
+    animation: none;
+  }
 }

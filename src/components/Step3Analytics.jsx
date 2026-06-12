@@ -3,7 +3,7 @@ import { ANALYTICS } from "../data/analyst.js";
 import { BarChart, Donut, LineChart } from "./Charts.jsx";
 import Editable from "./Editable.jsx";
 
-// Step 3 — analytics checkpoint, shown inline in the flow. Notes are editable.
+// Step 3 — analytics checkpoint on its own dedicated screen. Note is editable.
 export default function Step3Analytics({ onContinue, onBack }) {
   const [note, setNote] = useState(
     "Payments dominate contact volume and drive the most repeat tickets — prioritize a status explanation."
@@ -11,11 +11,13 @@ export default function Step3Analytics({ onContinue, onBack }) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h2 className="text-[22px] font-semibold tracking-tight text-ink">Analytics checkpoint</h2>
-      <p className="mt-1 text-[14px] text-ink-muted">Review the signal before the report is written.</p>
+      <div className="mb-8">
+        <div className="text-[12px] font-medium text-ink-muted">Step 3</div>
+        <h2 className="mt-1 text-[24px] font-semibold tracking-tight text-ink">Analytics checkpoint</h2>
+        <p className="mt-1 text-[14px] text-ink-muted">Review the signal before the report is written.</p>
+      </div>
 
-      {/* Metrics — no boxes, separated by whitespace + thin dividers */}
-      <div className="mt-8 grid grid-cols-2 gap-x-10 gap-y-8 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-10 gap-y-8 sm:grid-cols-4">
         {ANALYTICS.metrics.map((m) => (
           <div key={m.label}>
             <div className="text-[13px] text-ink-muted">{m.label}</div>
@@ -52,12 +54,7 @@ export default function Step3Analytics({ onContinue, onBack }) {
 
         <section>
           <h3 className="mb-2 text-[15px] font-semibold text-ink">Analyst note</h3>
-          <Editable
-            as="p"
-            value={note}
-            onChange={setNote}
-            className="text-[14px] leading-relaxed text-ink-soft"
-          />
+          <Editable as="p" value={note} onChange={setNote} className="text-[14px] leading-relaxed text-ink-soft" />
         </section>
       </div>
 
