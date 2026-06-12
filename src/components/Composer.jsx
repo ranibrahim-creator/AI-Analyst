@@ -75,8 +75,8 @@ export default function Composer({
 
   return (
     <div
-      className="rounded-2xl bg-elevated p-1.5 ring-1 ring-[var(--border-faint)]"
-      style={{ boxShadow: "var(--chat-shadow)" }}
+      className="rounded-2xl border border-[var(--composer-chat-border)] bg-[var(--composer-chat-bg)] p-1.5"
+      style={{ boxShadow: "var(--composer-chat-shadow)" }}
     >
       <form
         onSubmit={(e) => {
