@@ -9,9 +9,9 @@ function SearchIcon({ className = "h-3.5 w-3.5" }) {
   );
 }
 
-function SparkleIcon() {
+function SparkleIcon({ className = "h-4 w-4 text-ink-muted" }) {
   return (
-    <svg viewBox="0 0 16 16" className="h-4 w-4 text-ink-muted" aria-hidden>
+    <svg viewBox="0 0 16 16" className={className} aria-hidden>
       <path
         d="M8 1.5l1 3.5L12.5 6 9 7l-1 3.5L7 7 3.5 6 7 5zM12 10l.6 1.8L14.5 12.5l-1.9.7-.6 1.8-.6-1.8-1.9-.7 1.9-.7z"
         fill="currentColor"
@@ -129,7 +129,7 @@ export default function Sidebar({
       }`}
     >
       <div className={`flex h-full min-w-[248px] flex-col px-2 py-2 ${collapsed ? "invisible" : ""}`}>
-        {/* Product brand + collapse toggle */}
+        {/* Product brand + collapse toggle — top-aligned */}
         <div className="mb-2 flex items-start justify-between gap-2 px-1">
           <ProductBrand />
           <button
@@ -137,7 +137,7 @@ export default function Sidebar({
             onClick={onToggleCollapse}
             data-sidebar-toggle
             aria-label="Collapse sidebar"
-            className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-black/[0.05]"
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-black/[0.05]"
           >
             <PanelToggleIcon collapsed={false} />
           </button>
@@ -146,9 +146,9 @@ export default function Sidebar({
         <button
           type="button"
           onClick={onNew}
-          className="mx-1 inline-flex w-[calc(100%-8px)] items-center justify-center gap-2 rounded-lg border border-black/[0.12] bg-white px-3 py-2 text-[13px] font-medium text-ink shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors hover:bg-black/[0.02]"
+          className="mx-1 inline-flex w-[calc(100%-8px)] items-center justify-center gap-2 rounded-lg bg-ink px-3 py-2 text-[13px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition-opacity hover:opacity-90"
         >
-          <SparkleIcon />
+          <SparkleIcon className="text-white/80" />
           New analysis
         </button>
 
@@ -194,7 +194,7 @@ export default function Sidebar({
 
 export function SidebarExpandButton({ onClick }) {
   return (
-    <div className="absolute left-3 top-3 z-30 flex items-center gap-2.5">
+    <div className="absolute left-3 top-3 z-30 flex items-start gap-2.5">
       <button
         type="button"
         onClick={onClick}

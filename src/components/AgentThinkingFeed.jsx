@@ -6,9 +6,23 @@ const DEFAULT_LINES = [
   "Agent is cleaning report…",
 ];
 
-const LINE_HEIGHT = 28; // 7 * 4px — tight system rhythm
+const LINE_HEIGHT = 28;
 const HOLD_MS = 1000;
 const ROLL_MS = 400;
+
+function LoadingDots() {
+  return (
+    <span className="inline-flex shrink-0 items-center gap-[3px] pl-1" aria-hidden>
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className="h-1 w-1 rounded-full bg-ink-faint animate-blink"
+          style={{ animationDelay: `${i * 160}ms` }}
+        />
+      ))}
+    </span>
+  );
+}
 
 function buildKeyframes(name, count) {
   if (count <= 1) {
@@ -37,7 +51,7 @@ function buildKeyframes(name, count) {
   return `@keyframes ${name} { ${stops.join(" ")} }`;
 }
 
-// Vertical slot-machine roll — right-aligned, lives inside the composer shell.
+// Vertical slot-machine roll — left-aligned with trailing loading dots.
 export default function AgentThinkingFeed({ lines = [], active = true }) {
   const phrases = lines.length ? lines : DEFAULT_LINES;
   const count = phrases.length;
@@ -51,14 +65,15 @@ export default function AgentThinkingFeed({ lines = [], active = true }) {
   return (
     <>
       <style>{keyframes}</style>
-      <div
-        className="w-full overflow-hidden"
-        style={{ height: LINE_HEIGHT }}
-        aria-live="polite"
-        aria-label="Agent thinking"
-      >
+      <div className="w-full px-2 py-2">
         <div
-          className="vertical-roll-track flex w-full flex-col items-end justify-end"
+          className="overflow-hidden"
+          style={{ height: LINE_HEIGHT }}
+          aria-live="polite"
+          aria-label="Agent thinking"
+        >
+        <div
+          className="vertical-roll-track flex w-full flex-col items-start justify-start"
           style={{
             animation: `${animationName} ${duration}s ease-in-out infinite`,
           }}
@@ -66,12 +81,14 @@ export default function AgentThinkingFeed({ lines = [], active = true }) {
           {phrases.map((line, i) => (
             <p
               key={i}
-              className="w-full shrink-0 text-right text-[13px] font-medium leading-7 text-ink-muted"
+              className="flex w-full shrink-0 items-center justify-start text-left text-[13px] font-medium leading-7 text-ink-muted"
               style={{ height: LINE_HEIGHT }}
             >
-              {line}
+              <span className="min-w-0 truncate">{line}</span>
+              <LoadingDots />
             </p>
           ))}
+        </div>
         </div>
       </div>
     </>

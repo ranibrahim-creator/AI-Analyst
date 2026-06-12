@@ -58,18 +58,12 @@ export default function Composer({
   }
 
   if (mode === "thinking") {
-    return (
-      <div className="rounded-2xl bg-white p-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]">
-        <div className="flex min-h-[52px] items-center justify-end px-3 py-2">
-          <AgentThinkingFeed lines={thinkingLines} active />
-        </div>
-      </div>
-    );
+    return <AgentThinkingFeed lines={thinkingLines} active />;
   }
 
   if (mode === "approval") {
     return (
-      <p className="px-2 py-2 text-center text-[13px] font-medium leading-relaxed text-ink-soft">
+      <p className="px-2 py-2 text-left text-[13px] font-medium leading-relaxed text-ink-soft">
         {statusMessage}
       </p>
     );
