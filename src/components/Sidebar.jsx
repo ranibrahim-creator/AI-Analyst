@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import ThemeToggle from "./ThemeToggle.jsx";
 
 function SearchIcon({ className = "h-3.5 w-3.5" }) {
   return (
@@ -36,34 +37,6 @@ function PanelToggleIcon({ collapsed }) {
           <path d="M7.5 8l-2-1.5v3L7.5 8z" fill="currentColor" />
         </>
       )}
-    </svg>
-  );
-}
-
-function ThemeToggleIcon({ darkMode }) {
-  if (darkMode) {
-    return (
-      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
-        <path
-          d="M8 2.2a4.2 4.2 0 1 0 0 8.4 3.4 3.4 0 0 1 0-8.4z"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
-      <circle cx="8" cy="8" r="3.1" fill="none" stroke="currentColor" strokeWidth="1.3" />
-      <path
-        d="M8 1.2v1.4M8 13.4v1.4M1.2 8h1.4M13.4 8h1.4M3.1 3.1l1 1M11.9 11.9l1 1M12.9 3.1l-1 1M4.1 11.9l-1 1"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
     </svg>
   );
 }
@@ -234,14 +207,7 @@ export default function Sidebar({
             {userName.slice(0, 1).toUpperCase()}
           </span>
           <div className="min-w-0 flex-1 truncate text-[12px] font-medium leading-tight text-ink">{userName}</div>
-          <button
-            type="button"
-            onClick={onToggleDarkMode}
-            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-ink-muted transition-colors hover:bg-[var(--hover-subtle)] hover:text-ink"
-          >
-            <ThemeToggleIcon darkMode={darkMode} />
-          </button>
+          <ThemeToggle darkMode={darkMode} onToggle={onToggleDarkMode} />
         </div>
       </div>
     </aside>

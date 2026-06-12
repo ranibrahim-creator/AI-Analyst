@@ -35,6 +35,8 @@
     --step-ring: rgba(35, 33, 29, 0.1);
     --step-idle-bg: #ffffff;
     --step-idle-ring: rgba(0, 0, 0, 0.12);
+    --toggle-knob-bg: #ffffff;
+    --toggle-knob-icon: #f59e0b;
   }
 
   .dark {
@@ -56,7 +58,7 @@
     --composer-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
     --composer-shadow-focus: 0 4px 18px rgba(0, 0, 0, 0.45);
     --chat-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
-    --composer-chat-bg: #262624;
+    --composer-chat-bg: #2a2a28;
     --modal-overlay: rgba(0, 0, 0, 0.55);
     --modal-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
     --editable-hover: rgba(255, 255, 255, 0.04);
@@ -69,6 +71,8 @@
     --step-ring: rgba(236, 234, 228, 0.12);
     --step-idle-bg: #1a1a18;
     --step-idle-ring: rgba(255, 255, 255, 0.12);
+    --toggle-knob-bg: #2d2a3d;
+    --toggle-knob-icon: #fde68a;
   }
 
   html {

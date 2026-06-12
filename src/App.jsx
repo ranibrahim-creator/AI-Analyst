@@ -7,6 +7,7 @@ import Step2Thinking from "./components/Step2Thinking.jsx";
 import Step3Analytics from "./components/Step3Analytics.jsx";
 import Step4Report from "./components/Step4Report.jsx";
 import UnsavedChangesModal from "./components/UnsavedChangesModal.jsx";
+import ThemeRipple from "./components/ThemeRipple.jsx";
 import { AGENTS, INITIAL_HISTORY, buildLiveReport, answerQuestion } from "./data/analyst.js";
 
 const USER_NAME = "Rana";
@@ -56,6 +57,7 @@ export default function App() {
   const [openReportId, setOpenReportId] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(readStoredTheme);
+  const [themeRipple, setThemeRipple] = useState(null);
 
   const [prompt, setPrompt] = useState(
     "Summarize seller support conversations, identify operational friction, and produce a leadership-ready report."
@@ -101,6 +103,19 @@ export default function App() {
       // Ignore storage failures in restricted environments.
     }
   }, [darkMode]);
+
+  function handleThemeToggle(event) {
+    const nextDark = !darkMode;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reducedMotion) {
+      setDarkMode(nextDark);
+      return;
+    }
+
+    setThemeRipple({ x: event.clientX, y: event.clientY, targetDark: nextDark });
+    window.setTimeout(() => setDarkMode(nextDark), 300);
+  }
 
   // Agent thinking timer — drives composer scroll + proposal reveal (no main-panel animation).
   useEffect(() => {
@@ -282,7 +297,7 @@ export default function App() {
         userName={USER_NAME}
         collapsed={sidebarCollapsed}
         darkMode={darkMode}
-        onToggleDarkMode={() => setDarkMode((prev) => !prev)}
+        onToggleDarkMode={handleThemeToggle}
         onToggleCollapse={() => setSidebarCollapsed(true)}
         onNew={startNew}
         onOpen={openFromHistory}
@@ -362,6 +377,8 @@ export default function App() {
           setPendingNav(null);
         }}
       />
+
+      <ThemeRipple ripple={themeRipple} onComplete={() => setThemeRipple(null)} />
     </div>
   );
 }

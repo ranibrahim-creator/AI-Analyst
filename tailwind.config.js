@@ -59,6 +59,9 @@ export default {
         blink: "blink 1.1s ease-in-out infinite",
         "vertical-roll": "verticalRoll 5.6s ease-in-out infinite",
       },
+      transitionTimingFunction: {
+        spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      },
     },
   },
   plugins: [],
