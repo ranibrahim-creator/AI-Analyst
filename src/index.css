@@ -128,4 +128,14 @@
   .ai-aura--think {
     animation: none;
   }
+
+  .noon-logo-base,
+  .noon-logo-wink {
+    transition: none;
+  }
+}
+
+/* Noon logo → wink face cross-fade on hover */
+.noon-logo-wink {
+  transform-origin: center;
 }

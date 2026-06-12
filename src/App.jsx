@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import Sidebar from "./components/Sidebar.jsx";
+import Sidebar, { SidebarExpandButton } from "./components/Sidebar.jsx";
 import StepRail from "./components/StepRail.jsx";
 import Composer from "./components/Composer.jsx";
 import Step1Discovery from "./components/Step1Discovery.jsx";
 import Step2Thinking from "./components/Step2Thinking.jsx";
 import Step3Analytics from "./components/Step3Analytics.jsx";
-import Step4Report from "./components/Step4Report.jsx";
+import Step4Report, { fieldKey, recKey } from "./components/Step4Report.jsx";
+import UnsavedChangesModal from "./components/UnsavedChangesModal.jsx";
 import { AGENTS, INITIAL_HISTORY, buildLiveReport, answerQuestion } from "./data/analyst.js";
 
 const USER_NAME = "Ranouna";
@@ -23,12 +24,28 @@ function greetingText() {
   return `Good ${part}, ${USER_NAME}`;
 }
 
+function applyReportEdits(report, edits = {}) {
+  if (!report || !edits || Object.keys(edits).length === 0) return report;
+
+  const next = {
+    ...report,
+    title: edits.title ?? report.title,
+    sections: report.sections.map((section, si) => ({
+      ...section,
+      paragraphs: section.paragraphs.map((p, pi) => edits[fieldKey(si, pi)] ?? p),
+    })),
+    recommendations: report.recommendations.map((r, ri) => edits[recKey(ri)] ?? r),
+  };
+  return next;
+}
+
 export default function App() {
   const [history, setHistory] = useState(INITIAL_HISTORY);
   const [step, setStep] = useState(1);
   const [completed, setCompleted] = useState(0);
   const [view, setView] = useState("flow"); // 'flow' | 'history'
   const [openReportId, setOpenReportId] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const [prompt, setPrompt] = useState(
     "Summarize seller support conversations, identify operational friction, and produce a leadership-ready report."
@@ -43,6 +60,11 @@ export default function App() {
   const [edits, setEdits] = useState({});
   const timers = useRef([]);
 
+  // History report inline edits (keyed by report id)
+  const [historyEdits, setHistoryEdits] = useState({});
+  const [pendingNav, setPendingNav] = useState(null);
+  const [guardOpen, setGuardOpen] = useState(false);
+
   // Follow-up chat
   const [question, setQuestion] = useState("");
   const [qa, setQa] = useState([]);
@@ -50,7 +72,11 @@ export default function App() {
 
   const greeting = useMemo(greetingText, []);
   const viewingHistory = view === "history" && openReportId !== null;
-  const currentReport = viewingHistory ? history.find((r) => r.id === openReportId) : liveReport;
+  const baseReport = viewingHistory ? history.find((r) => r.id === openReportId) : liveReport;
+  const currentEdits = viewingHistory ? historyEdits[openReportId] ?? {} : {};
+  const currentReport = baseReport ? applyReportEdits(baseReport, currentEdits) : null;
+  const hasUnsavedHistoryEdits =
+    viewingHistory && openReportId && Object.keys(historyEdits[openReportId] ?? {}).length > 0;
 
   // Reveal the current agent's thoughts, then mark ready for approval.
   useEffect(() => {
@@ -74,7 +100,53 @@ export default function App() {
     setPending(false);
   }, [currentReport?.id]);
 
-  function startNew() {
+  function requestNavigation(action) {
+    if (hasUnsavedHistoryEdits) {
+      setPendingNav(() => action);
+      setGuardOpen(true);
+      return;
+    }
+    action();
+  }
+
+  function saveHistoryEdits() {
+    if (!openReportId || !baseReport) return;
+    const merged = applyReportEdits(baseReport, historyEdits[openReportId] ?? {});
+    setHistory((prev) => prev.map((r) => (r.id === openReportId ? merged : r)));
+    setHistoryEdits((prev) => {
+      const next = { ...prev };
+      delete next[openReportId];
+      return next;
+    });
+    const action = pendingNav;
+    setPendingNav(null);
+    setGuardOpen(false);
+    action?.();
+  }
+
+  function discardHistoryEdits() {
+    if (openReportId) {
+      setHistoryEdits((prev) => {
+        const next = { ...prev };
+        delete next[openReportId];
+        return next;
+      });
+    }
+    const action = pendingNav;
+    setPendingNav(null);
+    setGuardOpen(false);
+    action?.();
+  }
+
+  function handleHistoryEdit(key, value) {
+    if (!openReportId) return;
+    setHistoryEdits((prev) => ({
+      ...prev,
+      [openReportId]: { ...(prev[openReportId] ?? {}), [key]: value },
+    }));
+  }
+
+  function startNewImmediate() {
     timers.current.forEach(clearTimeout);
     setView("flow");
     setOpenReportId(null);
@@ -84,6 +156,10 @@ export default function App() {
     setCompleted(0);
     setAgentIndex(0);
     setEdits({});
+  }
+
+  function startNew() {
+    requestNavigation(startNewImmediate);
   }
 
   function handleStart(text) {
@@ -109,10 +185,15 @@ export default function App() {
     setStep(4);
   }
 
-  function openFromHistory(id) {
+  function openFromHistoryImmediate(id) {
     timers.current.forEach(clearTimeout);
     setView("history");
     setOpenReportId(id);
+  }
+
+  function openFromHistory(id) {
+    if (id === openReportId && view === "history") return;
+    requestNavigation(() => openFromHistoryImmediate(id));
   }
 
   function jumpStep(n) {
@@ -134,7 +215,7 @@ export default function App() {
   // Dock configuration
   const lifted = view === "flow" && step === 1;
   const composerMode = lifted ? "hero" : "chat";
-  const chatDisabled = view === "flow" && step !== 4; // chat only active on the final report / history
+  const chatDisabled = view === "flow" && step !== 4;
   const composerStatusMessage =
     "Report agent is waiting for your approval. Approve to continue to the next agent.";
 
@@ -144,13 +225,19 @@ export default function App() {
         history={history}
         activeReportId={viewingHistory ? openReportId : null}
         userName={USER_NAME}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(true)}
         onNew={startNew}
         onOpen={openFromHistory}
       />
 
-      <main className="relative h-screen flex-1 overflow-hidden bg-white">
-        {/* Scrollable content */}
-        <div className="h-full overflow-y-auto px-6 pt-10 sm:px-10" style={{ paddingBottom: lifted ? "2.5rem" : "11rem" }}>
+      <main className="relative h-screen flex-1 overflow-hidden bg-white transition-[margin] duration-300 ease-in-out">
+        {sidebarCollapsed && <SidebarExpandButton onClick={() => setSidebarCollapsed(false)} />}
+
+        <div
+          className="h-full overflow-y-auto px-6 pt-10 sm:px-10"
+          style={{ paddingBottom: lifted ? "2.5rem" : "11rem" }}
+        >
           {viewingHistory && currentReport ? (
             <div>
               <button
@@ -160,7 +247,14 @@ export default function App() {
               >
                 <span aria-hidden>←</span> New analysis
               </button>
-              <Step4Report report={currentReport} qa={qa} pending={pending} />
+              <Step4Report
+                report={currentReport}
+                qa={qa}
+                pending={pending}
+                editable
+                edits={currentEdits}
+                onEdit={handleHistoryEdit}
+              />
             </div>
           ) : (
             <div key={`flow-step-${step}-agent-${agentIndex}`} className="animate-fade-up">
@@ -183,7 +277,6 @@ export default function App() {
           )}
         </div>
 
-        {/* Persistent composer dock — slides between centered (Step 1) and bottom */}
         <div
           data-composer-dock
           className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 transition-transform duration-700 ease-out sm:px-10"
@@ -224,6 +317,16 @@ export default function App() {
           </div>
         </div>
       </main>
+
+      <UnsavedChangesModal
+        open={guardOpen}
+        onSave={saveHistoryEdits}
+        onDiscard={discardHistoryEdits}
+        onCancel={() => {
+          setGuardOpen(false);
+          setPendingNav(null);
+        }}
+      />
     </div>
   );
 }

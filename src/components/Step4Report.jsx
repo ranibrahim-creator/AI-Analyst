@@ -1,11 +1,33 @@
-// Step 4 — final report. Strictly static and non-editable. Follow-up answers
-// appear in the thread below; the chat input lives in the persistent dock.
-export default function Step4Report({ report, qa = [], pending = false }) {
+import Editable from "./Editable.jsx";
+
+function fieldKey(sectionIndex, paragraphIndex) {
+  return `s-${sectionIndex}-p-${paragraphIndex}`;
+}
+
+function recKey(index) {
+  return `r-${index}`;
+}
+
+// Step 4 — final report. Static in the live flow; editable when reviewing history.
+export default function Step4Report({ report, qa = [], pending = false, editable = false, edits = {}, onEdit }) {
+  function val(key, fallback) {
+    return edits[key] ?? fallback;
+  }
+
   return (
     <article className="mx-auto max-w-reading">
       <header className="mb-8">
         <span className="text-[12px] font-medium text-ink-muted">{report.tag}</span>
-        <h2 className="mt-1 text-[28px] font-semibold leading-tight tracking-tight text-ink">{report.title}</h2>
+        {editable ? (
+          <Editable
+            as="h2"
+            value={val("title", report.title)}
+            onChange={(v) => onEdit?.("title", v)}
+            className="mt-1 text-[28px] font-semibold leading-tight tracking-tight text-ink"
+          />
+        ) : (
+          <h2 className="mt-1 text-[28px] font-semibold leading-tight tracking-tight text-ink">{report.title}</h2>
+        )}
         <p className="mt-2 text-[13px] text-ink-muted">
           {report.date} · {report.focus}
         </p>
@@ -21,11 +43,22 @@ export default function Step4Report({ report, qa = [], pending = false }) {
           <section key={si}>
             <h3 className="mb-3 text-[16px] font-semibold text-ink">{section.heading}</h3>
             <div className="space-y-3">
-              {section.paragraphs.map((p, pi) => (
-                <p key={pi} className="text-[15px] leading-[1.75] text-ink-soft">
-                  {p}
-                </p>
-              ))}
+              {section.paragraphs.map((p, pi) => {
+                const key = fieldKey(si, pi);
+                return editable ? (
+                  <Editable
+                    key={key}
+                    as="p"
+                    value={val(key, p)}
+                    onChange={(v) => onEdit?.(key, v)}
+                    className="text-[15px] leading-[1.75] text-ink-soft"
+                  />
+                ) : (
+                  <p key={key} className="text-[15px] leading-[1.75] text-ink-soft">
+                    {p}
+                  </p>
+                );
+              })}
             </div>
           </section>
         ))}
@@ -33,12 +66,19 @@ export default function Step4Report({ report, qa = [], pending = false }) {
         <section>
           <h3 className="mb-3 text-[16px] font-semibold text-ink">Recommended actions</h3>
           <ol className="space-y-2.5">
-            {report.recommendations.map((r, ri) => (
-              <li key={ri} className="flex gap-3 text-[15px] leading-relaxed text-ink-soft">
-                <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-noon" />
-                <span>{r}</span>
-              </li>
-            ))}
+            {report.recommendations.map((r, ri) => {
+              const key = recKey(ri);
+              return (
+                <li key={key} className="flex gap-3 text-[15px] leading-relaxed text-ink-soft">
+                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-noon" />
+                  {editable ? (
+                    <Editable as="span" value={val(key, r)} onChange={(v) => onEdit?.(key, v)} className="leading-relaxed" />
+                  ) : (
+                    <span>{r}</span>
+                  )}
+                </li>
+              );
+            })}
           </ol>
         </section>
       </div>
@@ -78,3 +118,5 @@ export default function Step4Report({ report, qa = [], pending = false }) {
     </article>
   );
 }
+
+export { fieldKey, recKey };
