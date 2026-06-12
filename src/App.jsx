@@ -12,10 +12,26 @@ import { AGENTS, INITIAL_HISTORY, buildLiveReport, answerQuestion } from "./data
 const USER_NAME = "Rana";
 
 const SUGGESTIONS = [
-  { label: "Summarize support", prompt: "Summarize seller support conversations and surface the top operational friction points." },
-  { label: "Find friction", prompt: "Find the contact drivers causing repeat tickets and recommend macros to reduce them." },
-  { label: "Weekly digest", prompt: "Build a weekly digest of unresolved fulfillment and returns escalations by owner." },
-  { label: "Onboarding review", prompt: "Analyze new seller onboarding tickets and explain where the journey breaks down." },
+  {
+    label: "Summarize support",
+    prompt: "Summarize seller support conversations and surface the top operational friction points.",
+    icon: "summary",
+  },
+  {
+    label: "Find friction",
+    prompt: "Find the contact drivers causing repeat tickets and recommend macros to reduce them.",
+    icon: "friction",
+  },
+  {
+    label: "Weekly digest",
+    prompt: "Build a weekly digest of unresolved fulfillment and returns escalations by owner.",
+    icon: "digest",
+  },
+  {
+    label: "Onboarding review",
+    prompt: "Analyze new seller onboarding tickets and explain where the journey breaks down.",
+    icon: "onboarding",
+  },
 ];
 
 function applyReportEdits(report, edits = {}) {
