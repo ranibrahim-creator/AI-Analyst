@@ -31,7 +31,7 @@ export default function UnsavedChangesModal({ open, onSave, onDiscard, onCancel 
           <button
             type="button"
             onClick={onSave}
-            className="inline-flex h-9 items-center justify-center rounded-full bg-accent px-4 text-[13px] font-medium text-accent-foreground transition-opacity hover:opacity-90"
+            className="inline-flex h-9 items-center justify-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
           >
             Save changes
           </button>

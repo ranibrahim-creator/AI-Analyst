@@ -16,7 +16,7 @@ function LoadingDots() {
       {[0, 1, 2].map((i) => (
         <span
           key={i}
-          className="h-1 w-1 rounded-full bg-accent/70 animate-blink"
+          className="h-1 w-1 rounded-full bg-ink-faint animate-blink"
           style={{ animationDelay: `${i * 160}ms` }}
         />
       ))}

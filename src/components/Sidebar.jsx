@@ -146,9 +146,9 @@ export default function Sidebar({
         <button
           type="button"
           onClick={onNew}
-          className="mx-1 mt-1.5 inline-flex w-[calc(100%-8px)] items-center justify-center gap-1.5 rounded-md bg-accent px-2.5 py-1.5 text-[12px] font-medium text-accent-foreground shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-opacity hover:opacity-90"
+          className="mx-1 mt-1.5 inline-flex w-fit items-center gap-1.5 rounded-md bg-ink px-2.5 py-1.5 text-[12px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-opacity hover:opacity-90"
         >
-          <SparkleIcon className="h-3.5 w-3.5 text-accent-foreground/70" />
+          <SparkleIcon className="h-3.5 w-3.5 text-white/80" />
           New analysis
         </button>
 
@@ -172,10 +172,7 @@ export default function Sidebar({
                       active ? "bg-black/[0.06] text-ink" : "text-ink-soft hover:bg-black/[0.04] hover:text-ink"
                     }`}
                   >
-                    <span
-                      data-history-dot
-                      className={`h-1 w-1 shrink-0 rounded-full ${active ? "bg-accent" : "bg-ink-muted"}`}
-                    />
+                    <span data-history-dot className="h-1 w-1 shrink-0 rounded-full bg-ink-muted" />
                     <span className="truncate">{report.title}</span>
                   </button>
                 );
@@ -185,7 +182,7 @@ export default function Sidebar({
         </div>
 
         <div className="mt-auto flex items-center gap-2 border-t border-black/[0.06] px-2 py-2">
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-accent text-[11px] font-semibold text-accent-foreground">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-ink text-[11px] font-semibold text-white">
             {userName.slice(0, 1).toUpperCase()}
           </span>
           <div className="truncate text-[12px] font-medium leading-tight text-ink">{userName}</div>

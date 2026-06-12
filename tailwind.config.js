@@ -4,12 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Noon brand yellow — primary accent across the UI
+        // Noon brand accent — used only as a microscopic status indicator
         noon: "#FEEE00",
-        accent: {
-          DEFAULT: "#FEEE00",
-          foreground: "#23211d",
-        },
         // Soft Claude-like canvas
         canvas: "#F9F9F9",
         ink: {

@@ -1,4 +1,4 @@
-// Minimal, borderless charts. Yellow accent throughout.
+// Minimal, borderless charts. Noon yellow used only as a thin accent.
 
 export function BarChart({ data }) {
   const max = Math.max(...data.map((d) => d.value));
@@ -9,7 +9,7 @@ export function BarChart({ data }) {
           <span className="text-ink-soft">{d.label}</span>
           <span className="h-[6px] rounded-full bg-black/[0.05]">
             <span
-              className="block h-full rounded-full bg-accent"
+              className="block h-full rounded-full bg-ink/80"
               style={{ width: `${(d.value / max) * 100}%` }}
             />
           </span>
@@ -25,7 +25,7 @@ export function Donut({ data }) {
   const stops = data.map((d, i) => {
     const start = acc;
     acc += d.value;
-    const shades = ["#FEEE00", "#F5E100", "#E8D400"];
+    const shades = ["#23211d", "#8c887f", "#FEEE00"];
     return `${shades[i % shades.length]} ${start}% ${acc}%`;
   });
   return (
@@ -41,7 +41,7 @@ export function Donut({ data }) {
       </div>
       <ul className="space-y-2.5 text-[13px] text-ink-soft">
         {data.map((d, i) => {
-          const dots = ["bg-accent", "bg-accent/70", "bg-accent/45"];
+          const dots = ["bg-ink", "bg-ink-muted", "bg-noon"];
           return (
             <li key={d.label} className="flex items-center gap-2">
               <span className={`h-2 w-2 rounded-full ${dots[i % dots.length]}`} />
@@ -73,13 +73,13 @@ export function LineChart({ data }) {
         <polyline
           points={line}
           fill="none"
-          stroke="#FEEE00"
+          stroke="#23211d"
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         {pts.map((p) => (
-          <circle key={p.label} cx={p.x} cy={p.y} r="4" fill="#F9F9F9" stroke="#FEEE00" strokeWidth="2.5" />
+          <circle key={p.label} cx={p.x} cy={p.y} r="4" fill="#F9F9F9" stroke="#23211d" strokeWidth="2.5" />
         ))}
       </svg>
       <div className="mt-2 flex justify-between text-[12px] text-ink-muted">
