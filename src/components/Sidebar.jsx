@@ -9,12 +9,18 @@ function SearchIcon({ className = "h-3.5 w-3.5" }) {
   );
 }
 
-function SparkleIcon({ className = "h-4 w-4 text-ink-muted" }) {
+function SparkleIcon({ className = "h-4 w-4" }) {
   return (
-    <svg viewBox="0 0 16 16" className={className} aria-hidden>
+    <svg viewBox="0 0 16 16" className={`sparkle-icon ${className}`} aria-hidden>
       <path
-        d="M8 1.5l1 3.5L12.5 6 9 7l-1 3.5L7 7 3.5 6 7 5zM12 10l.6 1.8L14.5 12.5l-1.9.7-.6 1.8-.6-1.8-1.9-.7 1.9-.7z"
+        d="M8 1.5l1 3.5L12.5 6 9 7l-1 3.5L7 7 3.5 6 7 5z"
         fill="currentColor"
+        className="sparkle-star-main"
+      />
+      <path
+        d="M12 10l.6 1.8L14.5 12.5l-1.9.7-.6 1.8-.6-1.8-1.9-.7 1.9-.7z"
+        fill="currentColor"
+        className="sparkle-star-accent"
       />
     </svg>
   );
@@ -189,7 +195,7 @@ export default function Sidebar({
         <button
           type="button"
           onClick={onNew}
-          className="mx-1 mt-1.5 inline-flex w-[calc(100%-8px)] items-center justify-center gap-1.5 rounded-md bg-[var(--button-primary)] px-2.5 py-1.5 text-[12px] font-medium text-[var(--button-primary-text)] shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-opacity hover:opacity-90"
+          className="group/new mx-1 mt-1.5 inline-flex w-[calc(100%-8px)] items-center justify-center gap-1.5 rounded-md bg-[var(--button-primary)] px-2.5 py-1.5 text-[12px] font-medium text-[var(--button-primary-text)] shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-opacity hover:opacity-90"
         >
           <SparkleIcon className="h-3.5 w-3.5 opacity-80" />
           New analysis

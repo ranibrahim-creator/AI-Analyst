@@ -198,7 +198,56 @@
   animation: status-pulse 1.8s ease-in-out infinite;
 }
 
+/* New analysis sparkle — staggered twin-star twinkle */
+.sparkle-star-main,
+.sparkle-star-accent {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sparkle-star-main {
+  animation: sparkle-twinkle-main 3s ease-in-out infinite;
+}
+
+.sparkle-star-accent {
+  animation: sparkle-twinkle-accent 3s ease-in-out infinite;
+}
+
+.group\/new:hover .sparkle-star-main,
+.group\/new:hover .sparkle-star-accent {
+  animation-duration: 2s;
+}
+
+@keyframes sparkle-twinkle-main {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(0.9) rotate(-6deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes sparkle-twinkle-accent {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82) rotate(10deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .sparkle-star-main,
+  .sparkle-star-accent {
+    animation: none;
+  }
+
   .ai-aura--idle,
   .ai-aura--think {
     animation: none;
