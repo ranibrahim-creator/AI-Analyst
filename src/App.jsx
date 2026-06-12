@@ -291,23 +291,14 @@ export default function App() {
           style={{ paddingBottom: mainPaddingBottom }}
         >
           {viewingHistory && currentReport ? (
-            <div>
-              <button
-                type="button"
-                onClick={startNew}
-                className="mb-8 inline-flex items-center gap-2 text-[13px] font-medium text-ink-muted transition-colors hover:text-ink"
-              >
-                <span aria-hidden>←</span> New analysis
-              </button>
-              <Step4Report
-                report={currentReport}
-                qa={qa}
-                pending={pending}
-                editable
-                edits={currentEdits}
-                onEdit={handleHistoryEdit}
-              />
-            </div>
+            <Step4Report
+              report={currentReport}
+              qa={qa}
+              pending={pending}
+              editable
+              edits={currentEdits}
+              onEdit={handleHistoryEdit}
+            />
           ) : (
             <div key={`flow-step-${step}-agent-${agentIndex}`}>
               {step > 1 && <StepRail current={step} completed={completed} onJump={jumpStep} />}
