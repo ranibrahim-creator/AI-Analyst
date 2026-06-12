@@ -18,12 +18,6 @@ const SUGGESTIONS = [
   { label: "Onboarding review", prompt: "Analyze new seller onboarding tickets and explain where the journey breaks down." },
 ];
 
-function greetingText() {
-  const h = new Date().getHours();
-  const part = h < 12 ? "morning" : h < 18 ? "afternoon" : "evening";
-  return `Good ${part}, ${USER_NAME}`;
-}
-
 function applyReportEdits(report, edits = {}) {
   if (!report || !edits || Object.keys(edits).length === 0) return report;
 
@@ -74,7 +68,6 @@ export default function App() {
   const [qa, setQa] = useState([]);
   const [pending, setPending] = useState(false);
 
-  const greeting = useMemo(greetingText, []);
   const viewingHistory = view === "history" && openReportId !== null;
   const baseReport = viewingHistory ? history.find((r) => r.id === openReportId) : liveReport;
   const currentEdits = viewingHistory ? historyEdits[openReportId] ?? {} : {};
@@ -246,7 +239,7 @@ export default function App() {
     }, 650);
   }
 
-  const lifted = view === "flow" && step === 1;
+  const showHome = view === "flow" && step === 1;
 
   let composerMode = "chat";
   let composerStatus = "Report agent is waiting for your approval. Approve to continue to the next agent.";
@@ -277,8 +270,8 @@ export default function App() {
     scrollRef.current?.scrollTo({ top: 0 });
   }, [step, agentIndex, view, openReportId]);
 
-  const mainPaddingBottom = lifted ? "2.5rem" : hideStatusDock ? "2.5rem" : "11rem";
-  const dockTransform = lifted ? "translateY(-42vh)" : hideStatusDock ? "translateY(12px)" : "translateY(0)";
+  const mainPaddingBottom = showHome ? "2.5rem" : hideStatusDock ? "2.5rem" : "11rem";
+  const dockTransform = hideStatusDock ? "translateY(12px)" : "translateY(0)";
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#f7f7f5]">
@@ -313,7 +306,14 @@ export default function App() {
           ) : (
             <div key={`flow-step-${step}-agent-${agentIndex}`}>
               {step > 1 && <StepRail current={step} completed={completed} onJump={jumpStep} />}
-              {step === 1 && <Step1Discovery greeting={greeting} />}
+              {step === 1 && (
+                <Step1Discovery
+                  prompt={prompt}
+                  onPromptChange={setPrompt}
+                  onStart={handleStart}
+                  suggestions={SUGGESTIONS}
+                />
+              )}
               {step === 2 && (
                 <Step2Thinking
                   index={agentIndex}
@@ -330,46 +330,29 @@ export default function App() {
           )}
         </div>
 
-        <div
-          data-composer-dock
-          className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 transition-all ease-out sm:px-10 ${
-            lifted ? "duration-700" : "duration-300"
-          } ${hideStatusDock ? "opacity-0" : "opacity-100"}`}
-          style={{ transform: dockTransform }}
-        >
-          <div className="pointer-events-auto mx-auto max-w-reading">
-            <Composer
-              mode={chatEnabled ? "chat" : composerMode}
-              value={composerMode === "hero" ? prompt : question}
-              onChange={composerMode === "hero" ? setPrompt : setQuestion}
-              onSubmit={composerMode === "hero" ? handleStart : handleAsk}
-              disabled={!chatEnabled && composerMode === "chat"}
-              statusMessage={composerStatus}
-              thinkingLines={thinkingLines}
-              placeholder={
-                composerMode === "hero"
-                  ? "Message the Tech Care analyst…"
-                  : "Ask a follow-up about this report…"
-              }
-              buttonLabel={composerMode === "hero" ? "Start" : "Ask"}
-            />
-
-            {lifted && (
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
-                {SUGGESTIONS.map((s) => (
-                  <button
-                    key={s.label}
-                    type="button"
-                    onClick={() => setPrompt(s.prompt)}
-                    className="rounded-full bg-white px-3.5 py-1.5 text-[13px] text-ink-soft ring-1 ring-black/[0.05] transition-colors hover:text-ink hover:ring-black/10"
-                  >
-                    {s.label}
-                  </button>
-                ))}
-              </div>
-            )}
+        {!showHome && (
+          <div
+            data-composer-dock
+            className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 transition-all duration-300 ease-out sm:px-10 ${
+              hideStatusDock ? "opacity-0" : "opacity-100"
+            }`}
+            style={{ transform: dockTransform }}
+          >
+            <div className="pointer-events-auto mx-auto max-w-reading">
+              <Composer
+                mode={chatEnabled ? "chat" : composerMode}
+                value={question}
+                onChange={setQuestion}
+                onSubmit={handleAsk}
+                disabled={!chatEnabled && composerMode === "chat"}
+                statusMessage={composerStatus}
+                thinkingLines={thinkingLines}
+                placeholder="Ask a follow-up about this report…"
+                buttonLabel="Ask"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </main>
 
       <UnsavedChangesModal

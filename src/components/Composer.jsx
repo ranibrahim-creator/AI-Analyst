@@ -1,8 +1,7 @@
 import { useEffect, useRef } from "react";
 import AgentThinkingFeed from "./AgentThinkingFeed.jsx";
 
-// Persistent composer. Hero = Step 1 prompt. Chat = follow-up bar.
-// Thinking = vertically scrolling agent feed. Approval = status message (no dot).
+// Persistent composer. Hero = compact Notion-style prompt. Chat = follow-up bar.
 export default function Composer({
   mode = "hero",
   value,
@@ -27,30 +26,32 @@ export default function Composer({
 
   if (mode === "hero") {
     return (
-      <div className="rounded-3xl bg-white p-2.5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04] transition-shadow focus-within:shadow-[0_4px_20px_rgba(0,0,0,0.09)]">
+      <div className="overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-shadow focus-within:border-black/[0.12] focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.07)]">
         <textarea
           ref={ref}
-          rows={3}
+          rows={1}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+            if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               submit();
             }
           }}
           placeholder={placeholder}
-          className="w-full resize-none bg-transparent px-3 py-2 text-[15px] leading-relaxed text-ink outline-none placeholder:text-ink-faint"
+          className="max-h-24 w-full resize-none bg-transparent px-4 pb-1 pt-3.5 text-[15px] leading-snug text-ink outline-none placeholder:text-ink-faint"
         />
-        <div className="flex items-center justify-end px-1 pb-0.5">
+        <div className="flex items-center justify-end gap-2 px-3 pb-2.5 pt-0.5">
           <button
             type="button"
             onClick={submit}
             data-start
-            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
+            aria-label={buttonLabel}
+            className="grid h-8 w-8 place-items-center rounded-full bg-ink text-white transition-opacity hover:opacity-90"
           >
-            {buttonLabel}
-            <span aria-hidden>↑</span>
+            <span aria-hidden className="text-[15px] leading-none">
+              ↑
+            </span>
           </button>
         </div>
       </div>
@@ -69,7 +70,6 @@ export default function Composer({
     );
   }
 
-  // Slim chat bar for follow-up
   return (
     <div className="rounded-2xl bg-white p-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]">
       <form

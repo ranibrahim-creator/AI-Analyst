@@ -1,14 +1,41 @@
+import Composer from "./Composer.jsx";
 import NoonBrandLogo from "./NoonBrandLogo.jsx";
 
-export default function Step1Discovery({ greeting }) {
+// Notion-style home: logo, short headline, compact inline composer, starter chips.
+export default function Step1Discovery({ prompt, onPromptChange, onStart, suggestions = [] }) {
   return (
-    <div className="relative mx-auto flex max-w-reading flex-col items-center pt-[12vh] text-center">
-      <NoonBrandLogo size="hero" className="mb-6" />
+    <div className="mx-auto flex min-h-[62vh] w-full max-w-xl flex-col items-center justify-center px-2 text-center">
+      <NoonBrandLogo size="hero" className="mb-5" />
 
-      <h1 className="relative text-[32px] font-semibold tracking-tight text-ink">{greeting}</h1>
-      <p className="relative mt-2 max-w-sm text-[15px] leading-relaxed text-ink-muted">
-        Describe what to analyze and the squad will take it from here.
-      </p>
+      <h1 className="text-[26px] font-semibold tracking-tight text-ink sm:text-[28px]">
+        How can I help you today?
+      </h1>
+
+      <div className="mt-6 w-full">
+        <Composer
+          mode="hero"
+          value={prompt}
+          onChange={onPromptChange}
+          onSubmit={onStart}
+          placeholder="Ask the analyst anything…"
+          buttonLabel="Start"
+        />
+      </div>
+
+      {suggestions.length > 0 && (
+        <div className="mt-5 grid w-full grid-cols-2 gap-2">
+          {suggestions.map((s) => (
+            <button
+              key={s.label}
+              type="button"
+              onClick={() => onPromptChange(s.prompt)}
+              className="rounded-xl bg-black/[0.03] px-3 py-2.5 text-left text-[13px] leading-snug text-ink-soft transition-colors hover:bg-black/[0.05] hover:text-ink"
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
