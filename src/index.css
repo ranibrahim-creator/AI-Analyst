@@ -9,7 +9,7 @@
   }
 
   body {
-    @apply bg-canvas text-ink font-sans antialiased;
+    @apply bg-[#f7f7f5] text-ink font-sans antialiased;
   }
 }
 
@@ -30,41 +30,43 @@
 }
 
 /* ----------------------------------------------------------------------------
-   Ambient AI blob — fluid, gaseous aura built from layered radial gradients.
-   Bright white core blending out into a soft wash of Noon Yellow (#FEEE00).
-   Heavy blur + multiply blend keeps it a soft whisper, never a neon shape.
+   Ambient AI blob — fluid, gaseous aura with an irregular edge and heavy blur.
+   White center + soft Noon-yellow wash. Blend mode stays subtle and premium.
 ---------------------------------------------------------------------------- */
 .ai-aura {
   position: absolute;
-  inset: -12%;
+  inset: -14%;
   border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
   filter: blur(40px);
-  mix-blend-mode: multiply;
+  -webkit-backdrop-filter: blur(42px);
+  backdrop-filter: blur(42px);
+  mix-blend-mode: screen;
   background:
     radial-gradient(
-      circle at 50% 42%,
-      #ffffff 0%,
-      rgba(255, 255, 255, 0.85) 16%,
-      rgba(254, 238, 0, 0.55) 42%,
-      rgba(254, 238, 0, 0.12) 66%,
-      rgba(254, 238, 0, 0) 78%
+      circle at 48% 46%,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.86) 19%,
+      rgba(254, 238, 0, 0.34) 48%,
+      rgba(254, 238, 0, 0.12) 68%,
+      rgba(254, 238, 0, 0) 83%
     );
   will-change: transform;
+  pointer-events: none;
 }
 
 /* A second, offset layer adds depth and organic drift */
 .ai-aura--secondary {
-  inset: 4%;
+  inset: 6%;
   mix-blend-mode: screen;
   background:
     radial-gradient(
-      circle at 38% 60%,
+      circle at 36% 62%,
       rgba(255, 255, 255, 0.9) 0%,
-      rgba(255, 255, 255, 0.3) 30%,
-      rgba(254, 238, 0, 0.18) 55%,
-      rgba(254, 238, 0, 0) 75%
+      rgba(255, 255, 255, 0.28) 33%,
+      rgba(254, 238, 0, 0.14) 58%,
+      rgba(254, 238, 0, 0) 76%
     );
-  opacity: 0.8;
+  opacity: 0.88;
 }
 
 /* State A — Idle / Ambient: slow shifting liquid aura */
@@ -103,8 +105,22 @@
     transform: translateY(-4px) scale(1.04) rotate(0deg);
   }
   50% {
-    transform: translateY(4px) scale(1.12) rotate(180deg);
+    transform: translateY(4px) scale(1.1) rotate(180deg);
   }
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 0.48;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.status-pulse {
+  animation: status-pulse 1.8s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

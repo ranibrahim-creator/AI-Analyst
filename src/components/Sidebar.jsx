@@ -1,17 +1,10 @@
-// Borderless sidebar: noon wordmark, a primary "New analysis" button,
-// historical report logs with solid status dots, and the user profile.
-
-const STATUS_DOT = {
-  New: "bg-noon",
-  Payments: "bg-[#3276ff]",
-  Onboarding: "bg-ink",
-  Fulfillment: "bg-ink-muted",
-};
+// Notion-leaning sidebar: matte gray column, compact history tree,
+// uniform neutral status dots, and a clean bottom profile row.
 
 function NoonLogo() {
   // Clean vector "noon" wordmark with the signature smile under the middle.
   return (
-    <svg viewBox="0 0 132 44" className="h-7 w-auto" role="img" aria-label="noon">
+    <svg viewBox="0 0 132 44" className="h-6 w-auto" role="img" aria-label="noon">
       <text
         x="0"
         y="32"
@@ -36,39 +29,39 @@ function NoonLogo() {
 
 export default function Sidebar({ history, activeReportId, userName, onNew, onOpen }) {
   return (
-    <aside className="flex h-screen w-72 shrink-0 flex-col gap-6 px-4 py-6">
+    <aside className="flex h-screen w-[274px] shrink-0 flex-col border-r border-black/[0.08] bg-[#f4f4f2] px-3 py-3">
       {/* Branding */}
-      <div className="flex items-baseline gap-2 px-2">
+      <div className="flex items-baseline gap-2 px-2 py-1">
         <NoonLogo />
-        <span className="text-[12px] font-medium text-ink-muted">Tech Care</span>
+        <span className="text-[11px] font-medium text-ink-muted">Tech Care</span>
       </div>
 
-      {/* Primary action button */}
+      {/* Notion-like primary action button */}
       <button
         type="button"
         onClick={onNew}
-        className="inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-[14px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90"
+        className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg border border-black/[0.16] bg-white px-3 py-2 text-[13px] font-medium text-ink shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-colors hover:bg-black/[0.02]"
       >
-        <span className="text-noon">+</span> New analysis
+        <span className="grid h-4 w-4 place-items-center rounded-[4px] bg-ink text-[12px] font-semibold text-white">+</span>
+        New analysis
       </button>
 
       {/* History logs */}
-      <div className="flex min-h-0 flex-1 flex-col gap-1">
-        <div className="px-2 pb-1 text-[12px] font-medium text-ink-muted">History</div>
+      <div className="mt-3 flex min-h-0 flex-1 flex-col gap-1">
+        <div className="px-2 pb-0.5 text-[11px] font-medium text-ink-muted">History</div>
         <div className="flex-1 space-y-0.5 overflow-y-auto">
           {history.map((report) => {
             const active = report.id === activeReportId;
-            const dot = STATUS_DOT[report.tag] || "bg-ink-muted";
             return (
               <button
                 key={report.id}
                 type="button"
                 onClick={() => onOpen(report.id)}
-                className={`group flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left text-[13px] transition-colors ${
-                  active ? "bg-black/[0.05] text-ink" : "text-ink-soft hover:bg-black/[0.03] hover:text-ink"
+                className={`group flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[12px] leading-[1.2] transition-colors ${
+                  active ? "bg-black/[0.06] text-ink" : "text-ink-soft hover:bg-black/[0.035] hover:text-ink"
                 }`}
               >
-                <span className={`h-2 w-2 shrink-0 rounded-full ${active ? "bg-noon" : dot}`} />
+                <span data-history-dot className="h-1.5 w-1.5 shrink-0 rounded-full bg-ink-muted" />
                 <span className="truncate">{report.title}</span>
               </button>
             );
@@ -77,14 +70,11 @@ export default function Sidebar({ history, activeReportId, userName, onNew, onOp
       </div>
 
       {/* User profile */}
-      <div className="flex items-center gap-3 px-2 pt-2">
+      <div className="mt-auto flex items-center gap-2.5 px-2 py-1">
         <span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-[13px] font-semibold text-white">
           {userName.slice(0, 1).toUpperCase()}
         </span>
-        <div className="leading-tight">
-          <div className="text-[13px] font-medium text-ink">{userName}</div>
-          <div className="text-[11px] text-ink-muted">Tech Care squad</div>
-        </div>
+        <div className="text-[13px] font-medium leading-tight text-ink">{userName}</div>
       </div>
     </aside>
   );

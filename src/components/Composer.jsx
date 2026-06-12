@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import AmbientBlob from "./AmbientBlob.jsx";
 
 // Persistent composer. In `hero` mode it is the large Step 1 prompt box; in
 // `chat` mode it is the slim follow-up bar pinned at the bottom of the report.
@@ -9,6 +10,7 @@ export default function Composer({
   onSubmit,
   placeholder,
   disabled = false,
+  statusMessage = "",
   buttonLabel = "Start",
 }) {
   const ref = useRef(null);
@@ -54,33 +56,43 @@ export default function Composer({
     );
   }
 
-  // Slim chat bar
+  // Slim chat bar or morphed status state (while agents run / await approval)
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        submit();
-      }}
-      className={`flex items-center gap-2 rounded-2xl bg-white p-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04] focus-within:ring-black/10 ${
-        disabled ? "opacity-70" : ""
-      }`}
-    >
-      <input
-        value={value}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        data-ask-input
-        className="h-9 w-full bg-transparent px-3 text-[14px] text-ink outline-none placeholder:text-ink-faint disabled:cursor-default"
-      />
-      {!disabled && (
-        <button
-          type="submit"
-          className="inline-flex h-9 shrink-0 items-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
+    <div className="rounded-2xl bg-white p-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]">
+      {disabled ? (
+        <div className="flex min-h-[52px] items-center justify-center gap-3 px-4 text-center">
+          <span className="relative grid h-7 w-7 place-items-center">
+            <AmbientBlob mode="think" className="absolute inset-0" />
+            <span className="relative h-1.5 w-1.5 rounded-full bg-ink/70" />
+          </span>
+          <p className="status-pulse text-[13px] font-medium text-ink-soft">
+            {statusMessage || "Report agent is waiting for your approval. Approve to continue to the next agent."}
+          </p>
+        </div>
+      ) : (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit();
+          }}
+          className="flex items-center gap-2"
         >
-          {buttonLabel}
-        </button>
+          <input
+            value={value}
+            disabled={disabled}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder}
+            data-ask-input
+            className="h-9 w-full bg-transparent px-3 text-[14px] text-ink outline-none placeholder:text-ink-faint disabled:cursor-default"
+          />
+          <button
+            type="submit"
+            className="inline-flex h-9 shrink-0 items-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
+          >
+            {buttonLabel}
+          </button>
+        </form>
       )}
-    </form>
+    </div>
   );
 }

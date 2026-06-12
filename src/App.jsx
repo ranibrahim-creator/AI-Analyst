@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Sidebar from "./components/Sidebar.jsx";
 import StepRail from "./components/StepRail.jsx";
 import Composer from "./components/Composer.jsx";
-import ThinkingStream from "./components/ThinkingStream.jsx";
 import Step1Discovery from "./components/Step1Discovery.jsx";
 import Step2Thinking from "./components/Step2Thinking.jsx";
 import Step3Analytics from "./components/Step3Analytics.jsx";
@@ -134,24 +133,13 @@ export default function App() {
 
   // Dock configuration
   const lifted = view === "flow" && step === 1;
-  const showThinking = view === "flow" && (step === 2 || step === 3);
   const composerMode = lifted ? "hero" : "chat";
   const chatDisabled = view === "flow" && step !== 4; // chat only active on the final report / history
-  const agent = AGENTS[agentIndex];
-
-  const thinkingTitle =
-    step === 3
-      ? "Analytics ready for review"
-      : `${agent.name} ${ready ? "is waiting for your approval" : "is thinking"}`;
-  const thinkingDetail =
-    step === 3
-      ? "Review the charts, then generate the report."
-      : ready
-        ? "Approve to continue to the next agent."
-        : (edits[`${agent.id}-t-${Math.max(revealed - 1, 0)}`] ?? agent.thoughts[Math.max(revealed - 1, 0)]);
+  const composerStatusMessage =
+    "Report agent is waiting for your approval. Approve to continue to the next agent.";
 
   return (
-    <div className="flex">
+    <div className="flex h-screen overflow-hidden bg-[#f7f7f5]">
       <Sidebar
         history={history}
         activeReportId={viewingHistory ? openReportId : null}
@@ -160,7 +148,7 @@ export default function App() {
         onOpen={openFromHistory}
       />
 
-      <main className="relative h-screen flex-1 overflow-hidden">
+      <main className="relative h-screen flex-1 overflow-hidden bg-white">
         {/* Scrollable content */}
         <div className="h-full overflow-y-auto px-6 pt-10 sm:px-10" style={{ paddingBottom: lifted ? "2.5rem" : "11rem" }}>
           {viewingHistory && currentReport ? (
@@ -175,7 +163,7 @@ export default function App() {
               <Step4Report report={currentReport} qa={qa} pending={pending} />
             </div>
           ) : (
-            <>
+            <div key={`flow-step-${step}-agent-${agentIndex}`} className="animate-fade-up">
               {step > 1 && <StepRail current={step} completed={completed} onJump={jumpStep} />}
               {step === 1 && <Step1Discovery greeting={greeting} />}
               {step === 2 && (
@@ -191,28 +179,29 @@ export default function App() {
               )}
               {step === 3 && <Step3Analytics onContinue={continueToReport} onBack={() => setStep(2)} />}
               {step === 4 && liveReport && <Step4Report report={liveReport} qa={qa} pending={pending} />}
-            </>
+            </div>
           )}
         </div>
 
         {/* Persistent composer dock — slides between centered (Step 1) and bottom */}
         <div
+          data-composer-dock
           className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 transition-transform duration-700 ease-out sm:px-10"
           style={{ transform: lifted ? "translateY(-42vh)" : "translateY(0)" }}
         >
           <div className="pointer-events-auto mx-auto max-w-reading">
-            {showThinking && <ThinkingStream title={thinkingTitle} detail={thinkingDetail} />}
             <Composer
               mode={composerMode}
               value={composerMode === "hero" ? prompt : question}
               onChange={composerMode === "hero" ? setPrompt : setQuestion}
               onSubmit={composerMode === "hero" ? handleStart : handleAsk}
               disabled={composerMode !== "hero" && chatDisabled}
+              statusMessage={composerStatusMessage}
               placeholder={
                 composerMode === "hero"
                   ? "Message the Tech Care analyst…"
                   : chatDisabled
-                    ? "Agents are working…"
+                    ? ""
                     : "Ask a follow-up about this report…"
               }
               buttonLabel={composerMode === "hero" ? "Start" : "Ask"}

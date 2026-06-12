@@ -3,7 +3,7 @@
 export default function AmbientBlob({ mode = "idle", className = "" }) {
   const state = mode === "think" ? "ai-aura--think" : "ai-aura--idle";
   return (
-    <div className={`pointer-events-none relative ${className}`} aria-hidden="true">
+    <div data-ambient-blob className={`pointer-events-none relative ${className}`} aria-hidden="true">
       <div className={`ai-aura ${state}`} />
       <div className={`ai-aura ai-aura--secondary ${state}`} />
     </div>
