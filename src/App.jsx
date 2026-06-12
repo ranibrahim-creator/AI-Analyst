@@ -80,9 +80,12 @@ export default function App() {
   const currentEdits = viewingHistory ? historyEdits[openReportId] ?? {} : {};
   const currentReport = baseReport ? applyReportEdits(baseReport, currentEdits) : null;
 
+  const isLiveReportView = view === "flow" && step === 4 && liveReport;
+  const canHaveFollowUp = viewingHistory || isLiveReportView;
+
   const hasUnsavedHistoryEdits =
     viewingHistory && openReportId && Object.keys(historyEdits[openReportId] ?? {}).length > 0;
-  const hasUnsavedFollowUp = viewingHistory && followUpDirty(baseReport, qa, question);
+  const hasUnsavedFollowUp = canHaveFollowUp && followUpDirty(baseReport, qa, question);
   const hasUnsavedChanges = hasUnsavedHistoryEdits || hasUnsavedFollowUp;
 
   const agent = AGENTS[agentIndex];
@@ -124,27 +127,31 @@ export default function App() {
     action();
   }
 
-  function saveHistoryChanges() {
-    if (!openReportId || !baseReport) return;
-
-    const merged = applyReportEdits(baseReport, historyEdits[openReportId] ?? {});
-    const withFollowUp = { ...merged, followUp: qa };
-
-    setHistory((prev) => prev.map((r) => (r.id === openReportId ? withFollowUp : r)));
-    setHistoryEdits((prev) => {
-      const next = { ...prev };
-      delete next[openReportId];
-      return next;
-    });
-
+  function saveChanges() {
     const action = pendingNav;
     setPendingNav(null);
     setGuardOpen(false);
+
+    if (viewingHistory && openReportId && baseReport) {
+      const merged = applyReportEdits(baseReport, historyEdits[openReportId] ?? {});
+      const withFollowUp = { ...merged, followUp: qa };
+      setHistory((prev) => prev.map((r) => (r.id === openReportId ? withFollowUp : r)));
+      setHistoryEdits((prev) => {
+        const next = { ...prev };
+        delete next[openReportId];
+        return next;
+      });
+    } else if (isLiveReportView && liveReport) {
+      const withFollowUp = { ...liveReport, followUp: qa };
+      setLiveReport(withFollowUp);
+      setHistory((prev) => prev.map((r) => (r.id === "rpt-live" ? withFollowUp : r)));
+    }
+
     action?.();
   }
 
-  function discardHistoryChanges() {
-    if (openReportId) {
+  function discardChanges() {
+    if (viewingHistory && openReportId) {
       setHistoryEdits((prev) => {
         const next = { ...prev };
         delete next[openReportId];
@@ -152,7 +159,11 @@ export default function App() {
       });
       setQa(baseReport?.followUp ?? []);
       setQuestion("");
+    } else if (isLiveReportView) {
+      setQa(liveReport?.followUp ?? []);
+      setQuestion("");
     }
+
     const action = pendingNav;
     setPendingNav(null);
     setGuardOpen(false);
@@ -363,8 +374,8 @@ export default function App() {
 
       <UnsavedChangesModal
         open={guardOpen}
-        onSave={saveHistoryChanges}
-        onDiscard={discardHistoryChanges}
+        onSave={saveChanges}
+        onDiscard={discardChanges}
         onCancel={() => {
           setGuardOpen(false);
           setPendingNav(null);
