@@ -58,11 +58,7 @@ export default function Composer({
   }
 
   if (mode === "thinking") {
-    return (
-      <div className="rounded-2xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]">
-        <AgentThinkingFeed lines={thinkingLines} active />
-      </div>
-    );
+    return <AgentThinkingFeed lines={thinkingLines} active />;
   }
 
   if (mode === "approval") {

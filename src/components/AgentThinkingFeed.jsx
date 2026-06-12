@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
+const LINE_HEIGHT = 28;
+
 function LoadingDots() {
   return (
-    <span className="inline-flex items-center gap-[3px] pl-0.5" aria-hidden>
+    <span className="inline-flex shrink-0 items-center gap-[3px] pl-1" aria-hidden>
       {[0, 1, 2].map((i) => (
         <span
           key={i}
@@ -14,44 +16,48 @@ function LoadingDots() {
   );
 }
 
-// Swaps one thinking line at a time with a trailing loading ellipsis.
+// Cycles agent thought lines with a vertical slide — no container chrome.
 export default function AgentThinkingFeed({ lines = [], active = true }) {
   const [index, setIndex] = useState(0);
-  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     if (!active || lines.length <= 1) return undefined;
 
     const interval = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setIndex((i) => (i + 1) % lines.length);
-        setVisible(true);
-      }, 220);
-    }, 2400);
+      setIndex((i) => (i + 1) % lines.length);
+    }, 2600);
 
     return () => clearInterval(interval);
   }, [lines, active]);
 
   useEffect(() => {
     setIndex(0);
-    setVisible(true);
   }, [lines]);
 
   if (!lines.length) return null;
 
-  const line = lines[index] ?? lines[0];
-
   return (
-    <div className="px-5 py-4" aria-live="polite" aria-label="Agent thinking">
-      <p
-        className={`flex items-center text-[13px] leading-snug text-ink-soft transition-all duration-300 ease-in-out ${
-          visible ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
-        }`}
+    <div
+      className="overflow-hidden px-2 py-2"
+      style={{ height: LINE_HEIGHT }}
+      aria-live="polite"
+      aria-label="Agent thinking"
+    >
+      <div
+        className="transition-transform duration-500 ease-in-out"
+        style={{ transform: `translateY(-${index * LINE_HEIGHT}px)` }}
       >
-        <span className="min-w-0 truncate">{line}</span>
-        <LoadingDots />
-      </p>
+        {lines.map((line, i) => (
+          <p
+            key={i}
+            className="flex items-center justify-center text-center text-[13px] leading-snug text-ink-soft"
+            style={{ height: LINE_HEIGHT }}
+          >
+            <span className="min-w-0 truncate">{line}</span>
+            {i === index && <LoadingDots />}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }
