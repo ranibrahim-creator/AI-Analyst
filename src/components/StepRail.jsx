@@ -27,7 +27,7 @@ export default function StepRail({ current, completed, onJump }) {
     <nav aria-label="Analysis steps" className="mb-12">
       <ol className="relative flex items-start justify-between">
         <div
-          className="pointer-events-none absolute left-[8%] right-[8%] top-[14px] h-px bg-black/[0.08]"
+          className="pointer-events-none absolute left-[8%] right-[8%] top-[14px] h-px bg-[var(--border-subtle)]"
           aria-hidden
         />
 
@@ -49,10 +49,10 @@ export default function StepRail({ current, completed, onJump }) {
                 <span
                   className={`grid h-7 w-7 place-items-center rounded-full text-[11px] font-semibold transition-colors ${
                     isDone
-                      ? "bg-ink text-white"
+                      ? "bg-[var(--button-primary)] text-[var(--button-primary-text)]"
                       : isActive
-                        ? "bg-ink text-white ring-4 ring-ink/10"
-                        : "bg-white text-ink-faint ring-1 ring-black/[0.12]"
+                        ? "bg-[var(--button-primary)] text-[var(--button-primary-text)] ring-4 ring-[var(--step-ring)]"
+                        : "bg-[var(--step-idle-bg)] text-ink-faint ring-1 ring-[var(--step-idle-ring)]"
                   }`}
                 >
                   {isDone ? <CheckIcon /> : step.n}

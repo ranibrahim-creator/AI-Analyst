@@ -7,7 +7,7 @@ export function BarChart({ data }) {
       {data.map((d) => (
         <div key={d.label} className="grid grid-cols-[7rem_1fr_2.5rem] items-center gap-3 text-[13px]">
           <span className="text-ink-soft">{d.label}</span>
-          <span className="h-[6px] rounded-full bg-black/[0.05]">
+          <span className="h-[6px] rounded-full bg-[var(--hover-subtle)]">
             <span
               className="block h-full rounded-full bg-ink/80"
               style={{ width: `${(d.value / max) * 100}%` }}

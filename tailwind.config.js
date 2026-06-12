@@ -1,20 +1,27 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
       colors: {
-        // Noon brand accent — used only as a microscopic status indicator
         noon: "#FEEE00",
-        // Soft Claude-like canvas
         canvas: "#F9F9F9",
-        ink: {
-          DEFAULT: "#23211d",
-          soft: "#56524b",
-          muted: "#8c887f",
-          faint: "#b8b4ab",
+        app: "var(--app-bg)",
+        main: "var(--main-bg)",
+        sidebar: "var(--sidebar-bg)",
+        elevated: "var(--surface-elevated)",
+        suggestion: {
+          DEFAULT: "var(--suggestion-bg)",
+          hover: "var(--suggestion-hover)",
         },
-        line: "#ece9e3",
+        ink: {
+          DEFAULT: "var(--ink)",
+          soft: "var(--ink-soft)",
+          muted: "var(--ink-muted)",
+          faint: "var(--ink-faint)",
+        },
+        line: "var(--line)",
       },
       fontFamily: {
         sans: [

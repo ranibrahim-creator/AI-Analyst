@@ -8,7 +8,7 @@ function recKey(index) {
   return `r-${index}`;
 }
 
-// Step 4 — final report. Title editable after analysis; full inline edit when reviewing history.
+// Step 4 — final report. Title editable after analysis; history is read-only with follow-up chat.
 export default function Step4Report({
   report,
   qa = [],
@@ -108,7 +108,7 @@ export default function Step4Report({
               m.role === "user" ? (
                 <div
                   key={i}
-                  className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-ink px-4 py-2 text-[14px] text-white"
+                  className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-[var(--user-bubble)] px-4 py-2 text-[14px] text-[var(--user-bubble-text)]"
                 >
                   {m.text}
                 </div>

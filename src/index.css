@@ -3,13 +3,79 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --app-bg: #f7f7f5;
+    --main-bg: #ffffff;
+    --sidebar-bg: #f4f4f2;
+    --surface-elevated: #ffffff;
+    --suggestion-bg: #fafaf8;
+    --suggestion-hover: #f4f4f2;
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-faint: rgba(0, 0, 0, 0.06);
+    --hover-subtle: rgba(0, 0, 0, 0.04);
+    --hover-medium: rgba(0, 0, 0, 0.06);
+    --ink: #23211d;
+    --ink-soft: #56524b;
+    --ink-muted: #8c887f;
+    --ink-faint: #b8b4ab;
+    --line: #ece9e3;
+    --composer-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    --composer-shadow-focus: 0 4px 16px rgba(0, 0, 0, 0.07);
+    --chat-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    --modal-overlay: rgba(0, 0, 0, 0.18);
+    --modal-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --editable-hover: rgba(0, 0, 0, 0.02);
+    --editable-focus: rgba(0, 0, 0, 0.025);
+    --editable-ring: rgba(0, 0, 0, 0.06);
+    --user-bubble: #23211d;
+    --user-bubble-text: #ffffff;
+    --button-primary: #23211d;
+    --button-primary-text: #ffffff;
+    --step-ring: rgba(35, 33, 29, 0.1);
+    --step-idle-bg: #ffffff;
+    --step-idle-ring: rgba(0, 0, 0, 0.12);
+  }
+
+  .dark {
+    --app-bg: #111110;
+    --main-bg: #1a1a18;
+    --sidebar-bg: #161614;
+    --surface-elevated: #222220;
+    --suggestion-bg: #1f1f1d;
+    --suggestion-hover: #262624;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-faint: rgba(255, 255, 255, 0.06);
+    --hover-subtle: rgba(255, 255, 255, 0.05);
+    --hover-medium: rgba(255, 255, 255, 0.08);
+    --ink: #eceae4;
+    --ink-soft: #b0aca4;
+    --ink-muted: #8a8680;
+    --ink-faint: #5c5954;
+    --line: #2e2e2c;
+    --composer-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    --composer-shadow-focus: 0 4px 18px rgba(0, 0, 0, 0.45);
+    --chat-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+    --modal-overlay: rgba(0, 0, 0, 0.55);
+    --modal-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    --editable-hover: rgba(255, 255, 255, 0.04);
+    --editable-focus: rgba(255, 255, 255, 0.06);
+    --editable-ring: rgba(255, 255, 255, 0.1);
+    --user-bubble: #eceae4;
+    --user-bubble-text: #111110;
+    --button-primary: #eceae4;
+    --button-primary-text: #111110;
+    --step-ring: rgba(236, 234, 228, 0.12);
+    --step-idle-bg: #1a1a18;
+    --step-idle-ring: rgba(255, 255, 255, 0.12);
+  }
+
   html {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
   body {
-    @apply bg-[#f7f7f5] text-ink font-sans antialiased;
+    @apply bg-app text-ink font-sans antialiased;
   }
 
   [contenteditable]:focus {

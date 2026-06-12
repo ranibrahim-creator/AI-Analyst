@@ -63,7 +63,7 @@ export default function Step3Analytics({ onContinue, onBack }) {
           type="button"
           onClick={onContinue}
           data-continue
-          className="inline-flex h-9 items-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
+          className="inline-flex h-9 items-center rounded-full bg-[var(--button-primary)] px-4 text-[13px] font-medium text-[var(--button-primary-text)] transition-opacity hover:opacity-90"
         >
           Generate report
         </button>

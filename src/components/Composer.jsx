@@ -26,7 +26,10 @@ export default function Composer({
 
   if (mode === "hero") {
     return (
-      <div className="overflow-hidden rounded-2xl border border-black/[0.08] bg-white shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-shadow focus-within:border-black/[0.12] focus-within:shadow-[0_4px_16px_rgba(0,0,0,0.07)]">
+      <div
+        className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-elevated transition-shadow focus-within:border-[var(--border-subtle)] focus-within:shadow-[var(--composer-shadow-focus)]"
+        style={{ boxShadow: "var(--composer-shadow)" }}
+      >
         <textarea
           ref={ref}
           rows={1}
@@ -47,7 +50,7 @@ export default function Composer({
             onClick={submit}
             data-start
             aria-label={buttonLabel}
-            className="grid h-8 w-8 place-items-center rounded-full bg-ink text-white transition-opacity hover:opacity-90"
+            className="grid h-8 w-8 place-items-center rounded-full bg-[var(--button-primary)] text-[var(--button-primary-text)] transition-opacity hover:opacity-90"
           >
             <span aria-hidden className="text-[15px] leading-none">
               ↑
@@ -71,7 +74,10 @@ export default function Composer({
   }
 
   return (
-    <div className="rounded-2xl bg-white p-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]">
+    <div
+      className="rounded-2xl bg-elevated p-1.5 ring-1 ring-[var(--border-faint)]"
+      style={{ boxShadow: "var(--chat-shadow)" }}
+    >
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -90,7 +96,7 @@ export default function Composer({
         <button
           type="submit"
           disabled={disabled}
-          className="inline-flex h-9 shrink-0 items-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+          className="inline-flex h-9 shrink-0 items-center rounded-full bg-[var(--button-primary)] px-4 text-[13px] font-medium text-[var(--button-primary-text)] transition-opacity hover:opacity-90 disabled:opacity-40"
         >
           {buttonLabel}
         </button>

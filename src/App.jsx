@@ -5,7 +5,7 @@ import Composer from "./components/Composer.jsx";
 import Step1Discovery from "./components/Step1Discovery.jsx";
 import Step2Thinking from "./components/Step2Thinking.jsx";
 import Step3Analytics from "./components/Step3Analytics.jsx";
-import Step4Report, { fieldKey, recKey } from "./components/Step4Report.jsx";
+import Step4Report from "./components/Step4Report.jsx";
 import UnsavedChangesModal from "./components/UnsavedChangesModal.jsx";
 import { AGENTS, INITIAL_HISTORY, buildLiveReport, answerQuestion } from "./data/analyst.js";
 
@@ -34,24 +34,18 @@ const SUGGESTIONS = [
   },
 ];
 
-function applyReportEdits(report, edits = {}) {
-  if (!report || !edits || Object.keys(edits).length === 0) return report;
-
-  return {
-    ...report,
-    title: edits.title ?? report.title,
-    sections: report.sections.map((section, si) => ({
-      ...section,
-      paragraphs: section.paragraphs.map((p, pi) => edits[fieldKey(si, pi)] ?? p),
-    })),
-    recommendations: report.recommendations.map((r, ri) => edits[recKey(ri)] ?? r),
-  };
-}
-
 function followUpDirty(report, qa, question) {
   if (question.trim()) return true;
   const saved = report?.followUp ?? [];
   return JSON.stringify(qa) !== JSON.stringify(saved);
+}
+
+function readStoredTheme() {
+  try {
+    return localStorage.getItem("theme") === "dark";
+  } catch {
+    return false;
+  }
 }
 
 export default function App() {
@@ -61,6 +55,7 @@ export default function App() {
   const [view, setView] = useState("flow");
   const [openReportId, setOpenReportId] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [darkMode, setDarkMode] = useState(readStoredTheme);
 
   const [prompt, setPrompt] = useState(
     "Summarize seller support conversations, identify operational friction, and produce a leadership-ready report."
@@ -76,7 +71,6 @@ export default function App() {
   const scrollRef = useRef(null);
   const [dockHidden, setDockHidden] = useState(false);
 
-  const [historyEdits, setHistoryEdits] = useState({});
   const [pendingNav, setPendingNav] = useState(null);
   const [guardOpen, setGuardOpen] = useState(false);
 
@@ -86,22 +80,27 @@ export default function App() {
 
   const viewingHistory = view === "history" && openReportId !== null;
   const baseReport = viewingHistory ? history.find((r) => r.id === openReportId) : liveReport;
-  const currentEdits = viewingHistory ? historyEdits[openReportId] ?? {} : {};
-  const currentReport = baseReport ? applyReportEdits(baseReport, currentEdits) : null;
+  const currentReport = baseReport ?? null;
 
   const isLiveReportView = view === "flow" && step === 4 && liveReport;
   const canHaveFollowUp = viewingHistory || isLiveReportView;
 
-  const hasUnsavedHistoryEdits =
-    viewingHistory && openReportId && Object.keys(historyEdits[openReportId] ?? {}).length > 0;
-  const hasUnsavedFollowUp = canHaveFollowUp && followUpDirty(baseReport, qa, question);
-  const hasUnsavedChanges = hasUnsavedHistoryEdits || hasUnsavedFollowUp;
+  const hasUnsavedChanges = canHaveFollowUp && followUpDirty(baseReport, qa, question);
 
   const agent = AGENTS[agentIndex];
   const thinkingLines = useMemo(
     () => agent.thoughts.map((t, i) => edits[`${agent.id}-t-${i}`] ?? t),
     [agent, edits]
   );
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+    try {
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
+    } catch {
+      // Ignore storage failures in restricted environments.
+    }
+  }, [darkMode]);
 
   // Agent thinking timer — drives composer scroll + proposal reveal (no main-panel animation).
   useEffect(() => {
@@ -142,14 +141,8 @@ export default function App() {
     setGuardOpen(false);
 
     if (viewingHistory && openReportId && baseReport) {
-      const merged = applyReportEdits(baseReport, historyEdits[openReportId] ?? {});
-      const withFollowUp = { ...merged, followUp: qa };
+      const withFollowUp = { ...baseReport, followUp: qa };
       setHistory((prev) => prev.map((r) => (r.id === openReportId ? withFollowUp : r)));
-      setHistoryEdits((prev) => {
-        const next = { ...prev };
-        delete next[openReportId];
-        return next;
-      });
     } else if (isLiveReportView && liveReport) {
       const withFollowUp = { ...liveReport, followUp: qa };
       setLiveReport(withFollowUp);
@@ -161,11 +154,6 @@ export default function App() {
 
   function discardChanges() {
     if (viewingHistory && openReportId) {
-      setHistoryEdits((prev) => {
-        const next = { ...prev };
-        delete next[openReportId];
-        return next;
-      });
       setQa(baseReport?.followUp ?? []);
       setQuestion("");
     } else if (isLiveReportView) {
@@ -177,14 +165,6 @@ export default function App() {
     setPendingNav(null);
     setGuardOpen(false);
     action?.();
-  }
-
-  function handleHistoryEdit(key, value) {
-    if (!openReportId) return;
-    setHistoryEdits((prev) => ({
-      ...prev,
-      [openReportId]: { ...(prev[openReportId] ?? {}), [key]: value },
-    }));
   }
 
   function handleLiveTitleEdit(value) {
@@ -295,18 +275,20 @@ export default function App() {
   const dockTransform = hideStatusDock ? "translateY(12px)" : "translateY(0)";
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f7f7f5]">
+    <div className={`flex h-screen overflow-hidden bg-app ${darkMode ? "dark" : ""}`}>
       <Sidebar
         history={history}
         activeReportId={viewingHistory ? openReportId : null}
         userName={USER_NAME}
         collapsed={sidebarCollapsed}
+        darkMode={darkMode}
+        onToggleDarkMode={() => setDarkMode((prev) => !prev)}
         onToggleCollapse={() => setSidebarCollapsed(true)}
         onNew={startNew}
         onOpen={openFromHistory}
       />
 
-      <main className="relative h-screen flex-1 overflow-hidden bg-white">
+      <main className="relative h-screen flex-1 overflow-hidden bg-main">
         {sidebarCollapsed && <SidebarExpandButton onClick={() => setSidebarCollapsed(false)} />}
 
         <div
@@ -316,14 +298,7 @@ export default function App() {
           style={{ paddingBottom: mainPaddingBottom }}
         >
           {viewingHistory && currentReport ? (
-            <Step4Report
-              report={currentReport}
-              qa={qa}
-              pending={pending}
-              editable
-              edits={currentEdits}
-              onEdit={handleHistoryEdit}
-            />
+            <Step4Report report={currentReport} qa={qa} pending={pending} />
           ) : (
             <div key={`flow-step-${step}-agent-${agentIndex}`}>
               {step > 1 && <StepRail current={step} completed={completed} onJump={jumpStep} />}

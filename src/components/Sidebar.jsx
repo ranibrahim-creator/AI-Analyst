@@ -40,6 +40,34 @@ function PanelToggleIcon({ collapsed }) {
   );
 }
 
+function ThemeToggleIcon({ darkMode }) {
+  if (darkMode) {
+    return (
+      <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
+        <path
+          d="M8 2.2a4.2 4.2 0 1 0 0 8.4 3.4 3.4 0 0 1 0-8.4z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
+      <circle cx="8" cy="8" r="3.1" fill="none" stroke="currentColor" strokeWidth="1.3" />
+      <path
+        d="M8 1.2v1.4M8 13.4v1.4M1.2 8h1.4M13.4 8h1.4M3.1 3.1l1 1M11.9 11.9l1 1M12.9 3.1l-1 1M4.1 11.9l-1 1"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 function ProductBrand({ compact = false }) {
   return (
     <div className={`min-w-0 leading-none ${compact ? "" : "px-1"}`}>
@@ -111,6 +139,8 @@ export default function Sidebar({
   activeReportId,
   userName,
   collapsed,
+  darkMode,
+  onToggleDarkMode,
   onToggleCollapse,
   onNew,
   onOpen,
@@ -126,12 +156,11 @@ export default function Sidebar({
   return (
     <aside
       data-sidebar
-      className={`flex h-screen shrink-0 flex-col overflow-hidden border-r border-black/[0.08] bg-[#f4f4f2] transition-[width] duration-300 ease-in-out ${
+      className={`flex h-screen shrink-0 flex-col overflow-hidden border-r border-[var(--border-subtle)] bg-sidebar transition-[width] duration-300 ease-in-out ${
         collapsed ? "w-0 border-r-0" : "w-[248px]"
       }`}
     >
       <div className={`flex h-full min-w-[248px] flex-col px-2 py-2 ${collapsed ? "invisible" : ""}`}>
-        {/* Product brand + collapse toggle — tops aligned */}
         <div className="mb-2 flex items-start justify-between gap-2 px-1 pt-0.5">
           <ProductBrand />
           <button
@@ -139,7 +168,7 @@ export default function Sidebar({
             onClick={onToggleCollapse}
             data-sidebar-toggle
             aria-label="Collapse sidebar"
-            className="-mt-px grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-black/[0.05]"
+            className="-mt-px grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-[var(--hover-subtle)]"
           >
             <PanelToggleIcon collapsed={false} />
           </button>
@@ -148,9 +177,9 @@ export default function Sidebar({
         <button
           type="button"
           onClick={onNew}
-          className="mx-1 mt-1.5 inline-flex w-[calc(100%-8px)] items-center justify-center gap-1.5 rounded-md bg-ink px-2.5 py-1.5 text-[12px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-opacity hover:opacity-90"
+          className="mx-1 mt-1.5 inline-flex w-[calc(100%-8px)] items-center justify-center gap-1.5 rounded-md bg-[var(--button-primary)] px-2.5 py-1.5 text-[12px] font-medium text-[var(--button-primary-text)] shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-opacity hover:opacity-90"
         >
-          <SparkleIcon className="h-3.5 w-3.5 text-white/80" />
+          <SparkleIcon className="h-3.5 w-3.5 opacity-80" />
           New analysis
         </button>
 
@@ -171,7 +200,9 @@ export default function Sidebar({
                     type="button"
                     onClick={() => onOpen(report.id)}
                     className={`flex w-full items-center gap-1.5 rounded-md px-2 py-[5px] text-left text-[12px] leading-[1.2] transition-colors ${
-                      active ? "bg-black/[0.06] text-ink" : "text-ink-soft hover:bg-black/[0.04] hover:text-ink"
+                      active
+                        ? "bg-[var(--hover-medium)] text-ink"
+                        : "text-ink-soft hover:bg-[var(--hover-subtle)] hover:text-ink"
                     }`}
                   >
                     <span
@@ -186,11 +217,19 @@ export default function Sidebar({
           </div>
         </div>
 
-        <div className="mt-auto flex items-center gap-2 border-t border-black/[0.06] px-2 py-2">
-          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-ink text-[11px] font-semibold text-white">
+        <div className="mt-auto flex items-center gap-2 border-t border-[var(--border-faint)] px-2 py-2">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--button-primary)] text-[11px] font-semibold text-[var(--button-primary-text)]">
             {userName.slice(0, 1).toUpperCase()}
           </span>
-          <div className="truncate text-[12px] font-medium leading-tight text-ink">{userName}</div>
+          <div className="min-w-0 flex-1 truncate text-[12px] font-medium leading-tight text-ink">{userName}</div>
+          <button
+            type="button"
+            onClick={onToggleDarkMode}
+            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-ink-muted transition-colors hover:bg-[var(--hover-subtle)] hover:text-ink"
+          >
+            <ThemeToggleIcon darkMode={darkMode} />
+          </button>
         </div>
       </div>
     </aside>
@@ -205,7 +244,7 @@ export function SidebarExpandButton({ onClick }) {
         onClick={onClick}
         data-sidebar-expand
         aria-label="Expand sidebar"
-        className="-mt-px grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-black/[0.05]"
+        className="-mt-px grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-[var(--hover-subtle)]"
       >
         <PanelToggleIcon collapsed />
       </button>

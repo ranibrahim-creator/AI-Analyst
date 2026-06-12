@@ -44,7 +44,7 @@ export default function Step2Thinking({ index, ready, edits, onEdit, onApprove, 
               type="button"
               onClick={onApprove}
               data-approve
-              className="inline-flex h-9 items-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
+              className="inline-flex h-9 items-center rounded-full bg-[var(--button-primary)] px-4 text-[13px] font-medium text-[var(--button-primary-text)] transition-opacity hover:opacity-90"
             >
               {isLast ? "Approve & view analytics" : "Approve & continue"}
             </button>

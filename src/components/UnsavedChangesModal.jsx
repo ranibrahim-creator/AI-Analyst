@@ -4,21 +4,23 @@ export default function UnsavedChangesModal({ open, onSave, onDiscard, onCancel 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/[0.18] px-4 backdrop-blur-[2px]"
+      className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-[2px]"
+      style={{ backgroundColor: "var(--modal-overlay)" }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="unsaved-title"
       onClick={onCancel}
     >
       <div
-        className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-[0_8px_32px_rgba(0,0,0,0.12)] ring-1 ring-black/[0.06]"
+        className="w-full max-w-sm rounded-2xl bg-elevated p-6 ring-1 ring-[var(--border-faint)]"
+        style={{ boxShadow: "var(--modal-shadow)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="unsaved-title" className="text-[16px] font-semibold text-ink">
           Unsaved changes
         </h2>
         <p className="mt-2 text-[14px] leading-relaxed text-ink-soft">
-          You have unsaved report edits or follow-up messages. Save them before leaving?
+          You have unsaved follow-up messages. Save them before leaving?
         </p>
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
           <button
@@ -31,7 +33,7 @@ export default function UnsavedChangesModal({ open, onSave, onDiscard, onCancel 
           <button
             type="button"
             onClick={onSave}
-            className="inline-flex h-9 items-center justify-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
+            className="inline-flex h-9 items-center justify-center rounded-full bg-[var(--button-primary)] px-4 text-[13px] font-medium text-[var(--button-primary-text)] transition-opacity hover:opacity-90"
           >
             Save changes
           </button>
