@@ -146,9 +146,9 @@ export default function Sidebar({
         <button
           type="button"
           onClick={onNew}
-          className="mx-1 inline-flex w-[calc(100%-8px)] items-center justify-center gap-2 rounded-lg bg-ink px-3 py-2 text-[13px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] transition-opacity hover:opacity-90"
+          className="mx-1 mt-1.5 inline-flex w-fit items-center gap-1.5 rounded-md bg-ink px-2.5 py-1.5 text-[12px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-opacity hover:opacity-90"
         >
-          <SparkleIcon className="text-white/80" />
+          <SparkleIcon className="h-3.5 w-3.5 text-white/80" />
           New analysis
         </button>
 
