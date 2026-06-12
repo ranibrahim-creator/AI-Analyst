@@ -53,20 +53,11 @@ export default {
           "66%, 84%": { transform: "translateY(-75%)" },
           "88%, 100%": { transform: "translateY(0%)" },
         },
-        "clip-wave": {
-          "0%, 100%": { clipPath: "inset(0 0 0 0 round 6px)" },
-          "35%": { clipPath: "inset(0 0 10% 0 round 6px)" },
-          "70%": { clipPath: "inset(10% 0 0 0 round 6px)" },
-        },
       },
       animation: {
         "fade-up": "fade-up 280ms ease both",
         blink: "blink 1.1s ease-in-out infinite",
         "vertical-roll": "verticalRoll 5.6s ease-in-out infinite",
-        "clip-wave": "clip-wave 1.4s ease-in-out infinite",
-      },
-      transitionTimingFunction: {
-        elastic: "cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
     },
   },
