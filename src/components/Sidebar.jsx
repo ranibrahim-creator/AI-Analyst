@@ -1,13 +1,5 @@
-import { useMemo, useRef, useState } from "react";
-
-function SearchIcon({ className = "h-3.5 w-3.5" }) {
-  return (
-    <svg viewBox="0 0 16 16" className={className} aria-hidden>
-      <circle cx="6.5" cy="6.5" r="4.25" fill="none" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M10 10l3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
+import { useMemo, useState } from "react";
+import FlipSearch from "./FlipSearch.jsx";
 
 function SparkleIcon({ className = "h-4 w-4 text-ink-muted" }) {
   return (
@@ -81,71 +73,6 @@ function ProductBrand({ compact = false }) {
   );
 }
 
-function HistorySearch({ value, onChange }) {
-  const [open, setOpen] = useState(false);
-  const inputRef = useRef(null);
-
-  function expand() {
-    setOpen(true);
-    requestAnimationFrame(() => inputRef.current?.focus());
-  }
-
-  return (
-    <div
-      className="relative flex h-6 items-center"
-      onMouseEnter={expand}
-      onMouseLeave={() => {
-        if (!value.trim()) setOpen(false);
-      }}
-    >
-      <span
-        className={`shrink-0 text-[11px] font-medium text-ink-muted transition-all duration-300 ease-in-out ${
-          open ? "w-0 overflow-hidden opacity-0" : "mr-auto opacity-100"
-        }`}
-      >
-        History
-      </span>
-
-      <div
-        className={`flex items-center transition-all duration-300 ease-in-out ${
-          open ? "w-full" : "ml-auto w-5 justify-end"
-        }`}
-      >
-        <span className={`shrink-0 text-ink-faint ${open ? "mr-1.5" : ""}`}>
-          <SearchIcon />
-        </span>
-        <input
-          ref={inputRef}
-          type="search"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={expand}
-          onBlur={() => {
-            if (!value.trim()) setOpen(false);
-          }}
-          placeholder="Search reports…"
-          data-history-search
-          className={`h-6 min-w-0 bg-transparent text-[11px] text-ink outline-none placeholder:text-ink-faint transition-all duration-300 ease-in-out [&::-webkit-search-cancel-button]:hidden [&::-ms-clear]:hidden ${
-            open ? "w-full opacity-100" : "pointer-events-none w-0 opacity-0"
-          }`}
-        />
-        {open && value && (
-          <button
-            type="button"
-            onClick={() => onChange("")}
-            aria-label="Clear search"
-            className="ml-1 grid h-4 w-4 shrink-0 place-items-center text-ink-faint transition-colors hover:text-ink-muted"
-          >
-            <svg viewBox="0 0 16 16" className="h-3 w-3" aria-hidden>
-              <path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-            </svg>
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export default function Sidebar({
   history,
   activeReportId,
@@ -197,7 +124,7 @@ export default function Sidebar({
 
         <div className="mt-3 flex min-h-0 flex-1 flex-col px-1">
           <div className="mb-1 px-1">
-            <HistorySearch value={query} onChange={setQuery} />
+            <FlipSearch value={query} onChange={setQuery} />
           </div>
 
           <div className="flex-1 space-y-px overflow-y-auto">

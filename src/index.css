@@ -198,7 +198,25 @@
   animation: status-pulse 1.8s ease-in-out infinite;
 }
 
+/* 3D flip search — perspective shell + idle clip-path wave */
+.flip-search-perspective {
+  perspective: 600px;
+}
+
+.flip-search-shell--idle:hover {
+  animation: clip-wave 1.4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .flip-search-shell--idle:hover {
+    animation: none;
+  }
+
+  .flip-search-card,
+  .flip-search-shell {
+    transition-duration: 0.01ms !important;
+  }
+
   .ai-aura--idle,
   .ai-aura--think {
     animation: none;
