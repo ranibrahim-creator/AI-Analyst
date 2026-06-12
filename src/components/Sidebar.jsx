@@ -125,10 +125,22 @@ function HistorySearch({ value, onChange }) {
           }}
           placeholder="Search reports…"
           data-history-search
-          className={`h-6 min-w-0 bg-transparent text-[11px] text-ink outline-none placeholder:text-ink-faint transition-all duration-300 ease-in-out ${
+          className={`h-6 min-w-0 bg-transparent text-[11px] text-ink outline-none placeholder:text-ink-faint transition-all duration-300 ease-in-out [&::-webkit-search-cancel-button]:hidden [&::-ms-clear]:hidden ${
             open ? "w-full opacity-100" : "pointer-events-none w-0 opacity-0"
           }`}
         />
+        {open && value && (
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            aria-label="Clear search"
+            className="ml-1 grid h-4 w-4 shrink-0 place-items-center text-ink-faint transition-colors hover:text-ink-muted"
+          >
+            <svg viewBox="0 0 16 16" className="h-3 w-3" aria-hidden>
+              <path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+            </svg>
+          </button>
+        )}
       </div>
     </div>
   );
