@@ -11,6 +11,10 @@
   body {
     @apply bg-[#f7f7f5] text-ink font-sans antialiased;
   }
+
+  [contenteditable]:focus {
+    outline: none;
+  }
 }
 
 /* Thin, low-contrast scrollbars to match the minimalist canvas */
