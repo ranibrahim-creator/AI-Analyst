@@ -22,9 +22,7 @@
     --composer-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     --composer-shadow-focus: 0 4px 16px rgba(0, 0, 0, 0.07);
     --chat-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    --composer-chat-bg: #fafaf8;
-    --composer-chat-border: rgba(0, 0, 0, 0.11);
-    --composer-chat-shadow: 0 4px 18px rgba(0, 0, 0, 0.09), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    --composer-chat-bg: #f1f1ef;
     --modal-overlay: rgba(0, 0, 0, 0.18);
     --modal-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     --editable-hover: rgba(0, 0, 0, 0.02);
@@ -59,8 +57,6 @@
     --composer-shadow-focus: 0 4px 18px rgba(0, 0, 0, 0.45);
     --chat-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
     --composer-chat-bg: #262624;
-    --composer-chat-border: rgba(255, 255, 255, 0.12);
-    --composer-chat-shadow: 0 4px 20px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.07);
     --modal-overlay: rgba(0, 0, 0, 0.55);
     --modal-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
     --editable-hover: rgba(255, 255, 255, 0.04);

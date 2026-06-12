@@ -74,10 +74,7 @@ export default function Composer({
   }
 
   return (
-    <div
-      className="rounded-2xl border border-[var(--composer-chat-border)] bg-[var(--composer-chat-bg)] p-1.5"
-      style={{ boxShadow: "var(--composer-chat-shadow)" }}
-    >
+    <div className="rounded-2xl bg-[var(--composer-chat-bg)] p-1.5">
       <form
         onSubmit={(e) => {
           e.preventDefault();
