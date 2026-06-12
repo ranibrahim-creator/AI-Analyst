@@ -135,13 +135,14 @@
   }
 }
 
-/* Noon logo → wink face cross-fade on hover */
-.noon-logo-wink {
-  transform-origin: center;
+/* Noon wink line draws in on hover */
+.noon-wink-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 550ms ease-in-out, opacity 300ms ease-in-out;
 }
 
-/* Vertically scrolling agent thought feed — soft edge fade */
-.think-feed {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+.group:hover .noon-wink-stroke {
+  stroke-dashoffset: 0;
 }
+

@@ -1,43 +1,34 @@
 import AmbientBlob from "./AmbientBlob.jsx";
 
-// Official yellow Noon mark — no box, Notion-scale sizing. Hover morphs into a winking face.
+// Stroke-only yellow Noon mark. The same lines reposition into a winking face on hover.
 export default function NoonBrandLogo({ className = "", size = "hero" }) {
-  const dim = size === "hero" ? "h-[72px] w-[72px]" : "h-9 w-9";
+  const dim = size === "hero" ? "h-[80px] w-[80px]" : "h-9 w-9";
+  const sw = size === "hero" ? 5.5 : 3.5;
 
   return (
     <div className={`group relative inline-flex items-center justify-center ${className}`} aria-label="noon">
       {size === "hero" && <AmbientBlob mode="idle" className="absolute -inset-8 opacity-80" />}
 
       <svg viewBox="0 0 80 80" className={`relative ${dim}`} aria-hidden>
-        {/* Base yellow Noon glyph */}
-        <g className="noon-logo-base transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-95">
+        <g fill="none" stroke="#FEEE00" strokeLinecap="round" strokeLinejoin="round">
+          {/* Noon arc → smile */}
           <path
-            d="M40 8 C22 8 10 22 10 40 C10 58 22 72 40 72 C52 72 62 64 68 52"
-            fill="none"
-            stroke="#FEEE00"
-            strokeWidth="14"
-            strokeLinecap="round"
+            d="M54 24 A26 26 0 1 0 54 56"
+            strokeWidth={sw}
+            className="origin-[40px_42px] transition-all duration-[550ms] ease-in-out group-hover:translate-y-[6px] group-hover:scale-[0.55]"
           />
-          <rect x="18" y="14" width="16" height="10" rx="2" transform="rotate(-28 26 19)" fill="#FEEE00" />
-        </g>
-
-        {/* Winking AI face */}
-        <g className="noon-logo-wink opacity-0 transition-all duration-500 ease-in-out group-hover:opacity-100">
-          <circle cx="40" cy="40" r="30" fill="#FEEE00" opacity="0.18" />
-          <circle cx="28" cy="36" r="4.5" fill="#23211d" />
+          {/* Top tick → left eye */}
           <path
-            d="M48 34 q6 8 12 0"
-            fill="none"
-            stroke="#23211d"
-            strokeWidth="3"
-            strokeLinecap="round"
+            d="M26 30 L33 23"
+            strokeWidth={sw}
+            className="origin-[30px_26px] transition-all duration-[550ms] ease-in-out group-hover:translate-x-[2px] group-hover:translate-y-[8px] group-hover:rotate-[75deg] group-hover:scale-[0.55]"
           />
+          {/* Wink line — draws in on hover */}
           <path
-            d="M24 50 q16 14 32 0"
-            fill="none"
-            stroke="#23211d"
-            strokeWidth="3.5"
-            strokeLinecap="round"
+            d="M48 36 H58"
+            strokeWidth={sw - 0.5}
+            pathLength="1"
+            className="noon-wink-stroke opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100"
           />
         </g>
       </svg>

@@ -40,6 +40,17 @@ function PanelToggleIcon({ collapsed }) {
   );
 }
 
+function ProductBrand({ compact = false }) {
+  return (
+    <div className={`min-w-0 ${compact ? "" : "px-1"}`}>
+      <div className={`font-semibold leading-tight text-ink ${compact ? "text-[12px]" : "text-[13px]"}`}>
+        AI Analyst
+      </div>
+      <div className={`leading-tight text-ink-muted ${compact ? "text-[10px]" : "text-[11px]"}`}>Tech Care</div>
+    </div>
+  );
+}
+
 function HistorySearch({ value, onChange }) {
   const [open, setOpen] = useState(false);
   const inputRef = useRef(null);
@@ -51,22 +62,26 @@ function HistorySearch({ value, onChange }) {
 
   return (
     <div
-      className="group/history-search relative flex items-center"
+      className="relative flex h-6 items-center"
       onMouseEnter={expand}
       onMouseLeave={() => {
         if (!value.trim()) setOpen(false);
       }}
     >
-      <span className="text-[11px] font-medium text-ink-muted">History</span>
-
-      <div
-        className={`ml-auto flex items-center overflow-hidden transition-all duration-300 ease-in-out ${
-          open ? "w-full max-w-[168px]" : "w-5"
+      <span
+        className={`shrink-0 text-[11px] font-medium text-ink-muted transition-all duration-300 ease-in-out ${
+          open ? "w-0 overflow-hidden opacity-0" : "mr-auto opacity-100"
         }`}
       >
-        <span
-          className={`shrink-0 text-ink-faint transition-opacity ${open ? "mr-1.5 opacity-100" : "opacity-70"}`}
-        >
+        History
+      </span>
+
+      <div
+        className={`flex items-center transition-all duration-300 ease-in-out ${
+          open ? "w-full" : "ml-auto w-5 justify-end"
+        }`}
+      >
+        <span className={`shrink-0 text-ink-faint ${open ? "mr-1.5" : ""}`}>
           <SearchIcon />
         </span>
         <input
@@ -80,8 +95,8 @@ function HistorySearch({ value, onChange }) {
           }}
           placeholder="Search reports…"
           data-history-search
-          className={`h-6 w-full bg-transparent text-[11px] text-ink outline-none placeholder:text-ink-faint transition-opacity duration-300 ${
-            open ? "opacity-100" : "pointer-events-none opacity-0"
+          className={`h-6 min-w-0 bg-transparent text-[11px] text-ink outline-none placeholder:text-ink-faint transition-all duration-300 ease-in-out ${
+            open ? "w-full opacity-100" : "pointer-events-none w-0 opacity-0"
           }`}
         />
       </div>
@@ -114,20 +129,20 @@ export default function Sidebar({
       }`}
     >
       <div className={`flex h-full min-w-[248px] flex-col px-2 py-2 ${collapsed ? "invisible" : ""}`}>
-        {/* Collapse toggle */}
-        <div className="flex justify-end px-1 pb-1">
+        {/* Product brand + collapse toggle */}
+        <div className="mb-2 flex items-start justify-between gap-2 px-1">
+          <ProductBrand />
           <button
             type="button"
             onClick={onToggleCollapse}
             data-sidebar-toggle
             aria-label="Collapse sidebar"
-            className="grid h-7 w-7 place-items-center rounded-md transition-colors hover:bg-black/[0.05]"
+            className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-md transition-colors hover:bg-black/[0.05]"
           >
             <PanelToggleIcon collapsed={false} />
           </button>
         </div>
 
-        {/* Notion-style New analysis pill */}
         <button
           type="button"
           onClick={onNew}
@@ -137,7 +152,6 @@ export default function Sidebar({
           New analysis
         </button>
 
-        {/* History */}
         <div className="mt-3 flex min-h-0 flex-1 flex-col px-1">
           <div className="mb-1 px-1">
             <HistorySearch value={query} onChange={setQuery} />
@@ -167,15 +181,11 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Profile — Tech Care lives here subtly */}
         <div className="mt-auto flex items-center gap-2 border-t border-black/[0.06] px-2 py-2">
           <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-ink text-[11px] font-semibold text-white">
             {userName.slice(0, 1).toUpperCase()}
           </span>
-          <div className="min-w-0">
-            <div className="truncate text-[12px] font-medium leading-tight text-ink">{userName}</div>
-            <div className="truncate text-[10px] leading-tight text-ink-muted">Tech Care</div>
-          </div>
+          <div className="truncate text-[12px] font-medium leading-tight text-ink">{userName}</div>
         </div>
       </div>
     </aside>
@@ -184,14 +194,17 @@ export default function Sidebar({
 
 export function SidebarExpandButton({ onClick }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      data-sidebar-expand
-      aria-label="Expand sidebar"
-      className="absolute left-3 top-3 z-30 grid h-8 w-8 place-items-center rounded-md border border-black/[0.08] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors hover:bg-black/[0.02]"
-    >
-      <PanelToggleIcon collapsed />
-    </button>
+    <div className="absolute left-3 top-3 z-30 flex items-center gap-2.5">
+      <button
+        type="button"
+        onClick={onClick}
+        data-sidebar-expand
+        aria-label="Expand sidebar"
+        className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-black/[0.08] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors hover:bg-black/[0.02]"
+      >
+        <PanelToggleIcon collapsed />
+      </button>
+      <ProductBrand compact />
+    </div>
   );
 }

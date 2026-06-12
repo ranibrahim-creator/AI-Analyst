@@ -9,7 +9,7 @@ import Step4Report, { fieldKey, recKey } from "./components/Step4Report.jsx";
 import UnsavedChangesModal from "./components/UnsavedChangesModal.jsx";
 import { AGENTS, INITIAL_HISTORY, buildLiveReport, answerQuestion } from "./data/analyst.js";
 
-const USER_NAME = "Ranouna";
+const USER_NAME = "Rana";
 
 const SUGGESTIONS = [
   { label: "Summarize support", prompt: "Summarize seller support conversations and surface the top operational friction points." },
@@ -99,9 +99,14 @@ export default function App() {
     return () => timers.current.forEach(clearTimeout);
   }, [step, agentIndex, view, agent.thoughts.length]);
 
-  // Load follow-up thread when opening a history report.
+  // Load follow-up thread only when switching to a different history report.
   useEffect(() => {
-    if (!viewingHistory || !openReportId) return;
+    if (!viewingHistory || !openReportId) {
+      loadedReportId.current = null;
+      return;
+    }
+    if (loadedReportId.current === openReportId) return;
+    loadedReportId.current = openReportId;
     const report = history.find((r) => r.id === openReportId);
     setQa(report?.followUp ?? []);
     setQuestion("");
