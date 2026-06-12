@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import AmbientBlob from "./AmbientBlob.jsx";
+import AgentThinkingFeed from "./AgentThinkingFeed.jsx";
 
-// Persistent composer. In `hero` mode it is the large Step 1 prompt box; in
-// `chat` mode it is the slim follow-up bar pinned at the bottom of the report.
+// Persistent composer. Hero = Step 1 prompt. Chat = follow-up bar.
+// Thinking = vertically scrolling agent feed. Approval = status message (no dot).
 export default function Composer({
   mode = "hero",
   value,
@@ -11,6 +11,7 @@ export default function Composer({
   placeholder,
   disabled = false,
   statusMessage = "",
+  thinkingLines = [],
   buttonLabel = "Start",
 }) {
   const ref = useRef(null);
@@ -56,43 +57,50 @@ export default function Composer({
     );
   }
 
-  // Slim chat bar or morphed status state (while agents run / await approval)
+  if (mode === "thinking") {
+    return (
+      <div className="rounded-2xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]">
+        <AgentThinkingFeed lines={thinkingLines} active />
+      </div>
+    );
+  }
+
+  if (mode === "approval") {
+    return (
+      <div className="rounded-2xl bg-white px-5 py-4 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]">
+        <p className="status-pulse text-center text-[13px] font-medium leading-relaxed text-ink-soft">
+          {statusMessage}
+        </p>
+      </div>
+    );
+  }
+
+  // Slim chat bar for follow-up
   return (
     <div className="rounded-2xl bg-white p-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] ring-1 ring-black/[0.04]">
-      {disabled ? (
-        <div className="flex min-h-[52px] items-center justify-center gap-3 px-4 text-center">
-          <span className="relative grid h-7 w-7 place-items-center">
-            <AmbientBlob mode="think" className="absolute inset-0" />
-            <span className="relative h-1.5 w-1.5 rounded-full bg-ink/70" />
-          </span>
-          <p className="status-pulse text-[13px] font-medium text-ink-soft">
-            {statusMessage || "Report agent is waiting for your approval. Approve to continue to the next agent."}
-          </p>
-        </div>
-      ) : (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            submit();
-          }}
-          className="flex items-center gap-2"
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
+        className="flex items-center gap-2"
+      >
+        <input
+          value={value}
+          disabled={disabled}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          data-ask-input
+          className="h-9 w-full bg-transparent px-3 text-[14px] text-ink outline-none placeholder:text-ink-faint disabled:cursor-default"
+        />
+        <button
+          type="submit"
+          disabled={disabled}
+          className="inline-flex h-9 shrink-0 items-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
         >
-          <input
-            value={value}
-            disabled={disabled}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder}
-            data-ask-input
-            className="h-9 w-full bg-transparent px-3 text-[14px] text-ink outline-none placeholder:text-ink-faint disabled:cursor-default"
-          />
-          <button
-            type="submit"
-            className="inline-flex h-9 shrink-0 items-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
-          >
-            {buttonLabel}
-          </button>
-        </form>
-      )}
+          {buttonLabel}
+        </button>
+      </form>
     </div>
   );
 }

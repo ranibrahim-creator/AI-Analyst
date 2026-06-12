@@ -1,68 +1,43 @@
 import AmbientBlob from "./AmbientBlob.jsx";
 
-// Official minimalist Noon wordmark with ambient aura. On hover the mark
-// morphs into a stylized AI winking face via cross-fade + path animation.
-export default function NoonBrandLogo({ className = "" }) {
-  return (
-    <div
-      className={`group relative grid h-16 w-16 place-items-center rounded-2xl border border-black/15 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] ${className}`}
-      aria-label="noon"
-    >
-      <AmbientBlob mode="idle" className="absolute -inset-4 opacity-85" />
+// Official yellow Noon mark — no box, Notion-scale sizing. Hover morphs into a winking face.
+export default function NoonBrandLogo({ className = "", size = "hero" }) {
+  const dim = size === "hero" ? "h-[72px] w-[72px]" : "h-9 w-9";
 
-      <svg viewBox="0 0 64 64" className="relative h-10 w-10" aria-hidden>
-        {/* Base Noon mark — fades out on hover */}
-        <g className="noon-logo-base transition-opacity duration-500 ease-in-out group-hover:opacity-0">
-          <text
-            x="4"
-            y="38"
-            fontFamily="Inter, sans-serif"
-            fontSize="26"
-            fontWeight="700"
-            letterSpacing="-1.2"
-            fill="#23211d"
-          >
-            n
-          </text>
-          <circle cx="32" cy="34" r="3.2" fill="#23211d" />
-          <text
-            x="38"
-            y="38"
-            fontFamily="Inter, sans-serif"
-            fontSize="26"
-            fontWeight="700"
-            letterSpacing="-1.2"
-            fill="#23211d"
-          >
-            n
-          </text>
+  return (
+    <div className={`group relative inline-flex items-center justify-center ${className}`} aria-label="noon">
+      {size === "hero" && <AmbientBlob mode="idle" className="absolute -inset-8 opacity-80" />}
+
+      <svg viewBox="0 0 80 80" className={`relative ${dim}`} aria-hidden>
+        {/* Base yellow Noon glyph */}
+        <g className="noon-logo-base transition-all duration-500 ease-in-out group-hover:opacity-0 group-hover:scale-95">
           <path
-            d="M14 44 q18 10 36 0"
+            d="M40 8 C22 8 10 22 10 40 C10 58 22 72 40 72 C52 72 62 64 68 52"
             fill="none"
             stroke="#FEEE00"
-            strokeWidth="3.5"
+            strokeWidth="14"
             strokeLinecap="round"
           />
+          <rect x="18" y="14" width="16" height="10" rx="2" transform="rotate(-28 26 19)" fill="#FEEE00" />
         </g>
 
-        {/* Winking face — fades in on hover */}
-        <g className="noon-logo-wink opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100">
-          <circle cx="22" cy="28" r="3.2" fill="#23211d" />
+        {/* Winking AI face */}
+        <g className="noon-logo-wink opacity-0 transition-all duration-500 ease-in-out group-hover:opacity-100">
+          <circle cx="40" cy="40" r="30" fill="#FEEE00" opacity="0.18" />
+          <circle cx="28" cy="36" r="4.5" fill="#23211d" />
           <path
-            d="M40 26 q4 6 8 0"
+            d="M48 34 q6 8 12 0"
             fill="none"
             stroke="#23211d"
-            strokeWidth="2.8"
+            strokeWidth="3"
             strokeLinecap="round"
-            className="origin-[44px_28px] transition-transform duration-500 ease-in-out group-hover:-rotate-12"
           />
           <path
-            d="M18 42 q14 12 28 0"
+            d="M24 50 q16 14 32 0"
             fill="none"
-            stroke="#FEEE00"
+            stroke="#23211d"
             strokeWidth="3.5"
             strokeLinecap="round"
-            className="transition-all duration-500 ease-in-out group-hover:translate-y-0.5"
           />
         </g>
       </svg>

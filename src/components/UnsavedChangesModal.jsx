@@ -18,7 +18,7 @@ export default function UnsavedChangesModal({ open, onSave, onDiscard, onCancel 
           Unsaved changes
         </h2>
         <p className="mt-2 text-[14px] leading-relaxed text-ink-soft">
-          You have edits that haven&apos;t been saved. Save them before leaving this report?
+          You have unsaved report edits or follow-up messages. Save them before leaving?
         </p>
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
           <button

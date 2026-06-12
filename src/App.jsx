@@ -27,7 +27,7 @@ function greetingText() {
 function applyReportEdits(report, edits = {}) {
   if (!report || !edits || Object.keys(edits).length === 0) return report;
 
-  const next = {
+  return {
     ...report,
     title: edits.title ?? report.title,
     sections: report.sections.map((section, si) => ({
@@ -36,14 +36,19 @@ function applyReportEdits(report, edits = {}) {
     })),
     recommendations: report.recommendations.map((r, ri) => edits[recKey(ri)] ?? r),
   };
-  return next;
+}
+
+function followUpDirty(report, qa, question) {
+  if (question.trim()) return true;
+  const saved = report?.followUp ?? [];
+  return JSON.stringify(qa) !== JSON.stringify(saved);
 }
 
 export default function App() {
   const [history, setHistory] = useState(INITIAL_HISTORY);
   const [step, setStep] = useState(1);
   const [completed, setCompleted] = useState(0);
-  const [view, setView] = useState("flow"); // 'flow' | 'history'
+  const [view, setView] = useState("flow");
   const [openReportId, setOpenReportId] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -53,19 +58,16 @@ export default function App() {
   const [objective, setObjective] = useState("");
   const [liveReport, setLiveReport] = useState(null);
 
-  // Agent runtime (Step 2)
   const [agentIndex, setAgentIndex] = useState(0);
-  const [revealed, setRevealed] = useState(0);
   const [ready, setReady] = useState(false);
   const [edits, setEdits] = useState({});
   const timers = useRef([]);
+  const loadedReportId = useRef(null);
 
-  // History report inline edits (keyed by report id)
   const [historyEdits, setHistoryEdits] = useState({});
   const [pendingNav, setPendingNav] = useState(null);
   const [guardOpen, setGuardOpen] = useState(false);
 
-  // Follow-up chat
   const [question, setQuestion] = useState("");
   const [qa, setQa] = useState([]);
   const [pending, setPending] = useState(false);
@@ -75,33 +77,39 @@ export default function App() {
   const baseReport = viewingHistory ? history.find((r) => r.id === openReportId) : liveReport;
   const currentEdits = viewingHistory ? historyEdits[openReportId] ?? {} : {};
   const currentReport = baseReport ? applyReportEdits(baseReport, currentEdits) : null;
+
   const hasUnsavedHistoryEdits =
     viewingHistory && openReportId && Object.keys(historyEdits[openReportId] ?? {}).length > 0;
+  const hasUnsavedFollowUp = viewingHistory && followUpDirty(baseReport, qa, question);
+  const hasUnsavedChanges = hasUnsavedHistoryEdits || hasUnsavedFollowUp;
 
-  // Reveal the current agent's thoughts, then mark ready for approval.
+  const agent = AGENTS[agentIndex];
+  const thinkingLines = useMemo(
+    () => agent.thoughts.map((t, i) => edits[`${agent.id}-t-${i}`] ?? t),
+    [agent, edits]
+  );
+
+  // Agent thinking timer — drives composer scroll + proposal reveal (no main-panel animation).
   useEffect(() => {
     if (view !== "flow" || step !== 2) return undefined;
     timers.current.forEach(clearTimeout);
     timers.current = [];
-    setRevealed(0);
     setReady(false);
-    const agent = AGENTS[agentIndex];
-    agent.thoughts.forEach((_, i) => {
-      timers.current.push(setTimeout(() => setRevealed(i + 1), 450 * (i + 1)));
-    });
-    timers.current.push(setTimeout(() => setReady(true), 450 * (agent.thoughts.length + 1)));
+    timers.current.push(setTimeout(() => setReady(true), 450 * (agent.thoughts.length + 2)));
     return () => timers.current.forEach(clearTimeout);
-  }, [step, agentIndex, view]);
+  }, [step, agentIndex, view, agent.thoughts.length]);
 
-  // Reset the follow-up thread whenever the displayed report changes.
+  // Load follow-up thread when opening a history report.
   useEffect(() => {
-    setQa([]);
+    if (!viewingHistory || !openReportId) return;
+    const report = history.find((r) => r.id === openReportId);
+    setQa(report?.followUp ?? []);
     setQuestion("");
     setPending(false);
-  }, [currentReport?.id]);
+  }, [openReportId, viewingHistory, history]);
 
   function requestNavigation(action) {
-    if (hasUnsavedHistoryEdits) {
+    if (hasUnsavedChanges) {
       setPendingNav(() => action);
       setGuardOpen(true);
       return;
@@ -109,28 +117,34 @@ export default function App() {
     action();
   }
 
-  function saveHistoryEdits() {
+  function saveHistoryChanges() {
     if (!openReportId || !baseReport) return;
+
     const merged = applyReportEdits(baseReport, historyEdits[openReportId] ?? {});
-    setHistory((prev) => prev.map((r) => (r.id === openReportId ? merged : r)));
+    const withFollowUp = { ...merged, followUp: qa };
+
+    setHistory((prev) => prev.map((r) => (r.id === openReportId ? withFollowUp : r)));
     setHistoryEdits((prev) => {
       const next = { ...prev };
       delete next[openReportId];
       return next;
     });
+
     const action = pendingNav;
     setPendingNav(null);
     setGuardOpen(false);
     action?.();
   }
 
-  function discardHistoryEdits() {
+  function discardHistoryChanges() {
     if (openReportId) {
       setHistoryEdits((prev) => {
         const next = { ...prev };
         delete next[openReportId];
         return next;
       });
+      setQa(baseReport?.followUp ?? []);
+      setQuestion("");
     }
     const action = pendingNav;
     setPendingNav(null);
@@ -156,6 +170,7 @@ export default function App() {
     setCompleted(0);
     setAgentIndex(0);
     setEdits({});
+    setReady(false);
   }
 
   function startNew() {
@@ -168,6 +183,7 @@ export default function App() {
     setAgentIndex(0);
     setCompleted(1);
     setStep(2);
+    setReady(false);
   }
 
   function approveAgent() {
@@ -212,12 +228,23 @@ export default function App() {
     }, 650);
   }
 
-  // Dock configuration
   const lifted = view === "flow" && step === 1;
-  const composerMode = lifted ? "hero" : "chat";
-  const chatDisabled = view === "flow" && step !== 4;
-  const composerStatusMessage =
-    "Report agent is waiting for your approval. Approve to continue to the next agent.";
+
+  let composerMode = "chat";
+  let composerStatus = "Report agent is waiting for your approval. Approve to continue to the next agent.";
+
+  if (view === "flow" && step === 1) {
+    composerMode = "hero";
+  } else if (view === "flow" && step === 2 && !ready) {
+    composerMode = "thinking";
+  } else if (view === "flow" && step === 2 && ready) {
+    composerMode = "approval";
+  } else if (view === "flow" && step === 3) {
+    composerMode = "approval";
+    composerStatus = "Review the analytics checkpoint, then generate the report.";
+  }
+
+  const chatEnabled = viewingHistory || (view === "flow" && step === 4);
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#f7f7f5]">
@@ -231,7 +258,7 @@ export default function App() {
         onOpen={openFromHistory}
       />
 
-      <main className="relative h-screen flex-1 overflow-hidden bg-white transition-[margin] duration-300 ease-in-out">
+      <main className="relative h-screen flex-1 overflow-hidden bg-white">
         {sidebarCollapsed && <SidebarExpandButton onClick={() => setSidebarCollapsed(false)} />}
 
         <div
@@ -257,13 +284,12 @@ export default function App() {
               />
             </div>
           ) : (
-            <div key={`flow-step-${step}-agent-${agentIndex}`} className="animate-fade-up">
+            <div key={`flow-step-${step}-agent-${agentIndex}`}>
               {step > 1 && <StepRail current={step} completed={completed} onJump={jumpStep} />}
               {step === 1 && <Step1Discovery greeting={greeting} />}
               {step === 2 && (
                 <Step2Thinking
                   index={agentIndex}
-                  revealed={revealed}
                   ready={ready}
                   edits={edits}
                   onEdit={(k, v) => setEdits((p) => ({ ...p, [k]: v }))}
@@ -279,23 +305,24 @@ export default function App() {
 
         <div
           data-composer-dock
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 transition-transform duration-700 ease-out sm:px-10"
+          className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 sm:px-10 ${
+            lifted ? "transition-transform duration-700 ease-out" : ""
+          }`}
           style={{ transform: lifted ? "translateY(-42vh)" : "translateY(0)" }}
         >
           <div className="pointer-events-auto mx-auto max-w-reading">
             <Composer
-              mode={composerMode}
+              mode={chatEnabled ? "chat" : composerMode}
               value={composerMode === "hero" ? prompt : question}
               onChange={composerMode === "hero" ? setPrompt : setQuestion}
               onSubmit={composerMode === "hero" ? handleStart : handleAsk}
-              disabled={composerMode !== "hero" && chatDisabled}
-              statusMessage={composerStatusMessage}
+              disabled={!chatEnabled && composerMode === "chat"}
+              statusMessage={composerStatus}
+              thinkingLines={thinkingLines}
               placeholder={
                 composerMode === "hero"
                   ? "Message the Tech Care analyst…"
-                  : chatDisabled
-                    ? ""
-                    : "Ask a follow-up about this report…"
+                  : "Ask a follow-up about this report…"
               }
               buttonLabel={composerMode === "hero" ? "Start" : "Ask"}
             />
@@ -320,8 +347,8 @@ export default function App() {
 
       <UnsavedChangesModal
         open={guardOpen}
-        onSave={saveHistoryEdits}
-        onDiscard={discardHistoryEdits}
+        onSave={saveHistoryChanges}
+        onDiscard={discardHistoryChanges}
         onCancel={() => {
           setGuardOpen(false);
           setPendingNav(null);
