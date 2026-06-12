@@ -47,7 +47,7 @@ export default function Composer({
             type="button"
             onClick={submit}
             data-start
-            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-accent px-4 text-[13px] font-medium text-accent-foreground transition-opacity hover:opacity-90"
           >
             {buttonLabel}
             <span aria-hidden>↑</span>
@@ -90,7 +90,7 @@ export default function Composer({
         <button
           type="submit"
           disabled={disabled}
-          className="inline-flex h-9 shrink-0 items-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+          className="inline-flex h-9 shrink-0 items-center rounded-full bg-accent px-4 text-[13px] font-medium text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
         >
           {buttonLabel}
         </button>

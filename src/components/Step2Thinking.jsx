@@ -27,7 +27,7 @@ export default function Step2Thinking({ index, ready, edits, onEdit, onApprove, 
               const key = `${agent.id}-p-${pi}`;
               return (
                 <li key={key} className="flex gap-2.5 text-[15px] text-ink">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-noon" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
                   <Editable
                     as="span"
                     value={edits[key] ?? p}
@@ -44,7 +44,7 @@ export default function Step2Thinking({ index, ready, edits, onEdit, onApprove, 
               type="button"
               onClick={onApprove}
               data-approve
-              className="inline-flex h-9 items-center rounded-full bg-ink px-4 text-[13px] font-medium text-white transition-opacity hover:opacity-90"
+              className="inline-flex h-9 items-center rounded-full bg-accent px-4 text-[13px] font-medium text-accent-foreground transition-opacity hover:opacity-90"
             >
               {isLast ? "Approve & view analytics" : "Approve & continue"}
             </button>

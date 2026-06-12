@@ -49,9 +49,9 @@ export default function StepRail({ current, completed, onJump }) {
                 <span
                   className={`grid h-7 w-7 place-items-center rounded-full text-[11px] font-semibold transition-colors ${
                     isDone
-                      ? "bg-ink text-white"
+                      ? "bg-accent text-accent-foreground"
                       : isActive
-                        ? "bg-ink text-white ring-4 ring-ink/10"
+                        ? "bg-accent text-accent-foreground ring-4 ring-accent/25"
                         : "bg-white text-ink-faint ring-1 ring-black/[0.12]"
                   }`}
                 >

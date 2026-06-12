@@ -70,7 +70,7 @@ export default function Step4Report({ report, qa = [], pending = false, editable
               const key = recKey(ri);
               return (
                 <li key={key} className="flex gap-3 text-[15px] leading-relaxed text-ink-soft">
-                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-noon" />
+                  <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
                   {editable ? (
                     <Editable as="span" value={val(key, r)} onChange={(v) => onEdit?.(key, v)} className="leading-relaxed" />
                   ) : (
@@ -91,7 +91,7 @@ export default function Step4Report({ report, qa = [], pending = false, editable
               m.role === "user" ? (
                 <div
                   key={i}
-                  className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-ink px-4 py-2 text-[14px] text-white"
+                  className="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-accent px-4 py-2 text-[14px] text-accent-foreground"
                 >
                   {m.text}
                 </div>
@@ -106,7 +106,7 @@ export default function Step4Report({ report, qa = [], pending = false, editable
                 {[0, 1, 2].map((i) => (
                   <span
                     key={i}
-                    className="h-1.5 w-1.5 rounded-full bg-ink-faint animate-blink"
+                    className="h-1.5 w-1.5 rounded-full bg-accent/70 animate-blink"
                     style={{ animationDelay: `${i * 150}ms` }}
                   />
                 ))}
