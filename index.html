@@ -4,419 +4,222 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tech Care CS AI Analyst</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ffe500'/%3E%3Ctext x='16' y='23' font-family='Inter,sans-serif' font-size='20' font-weight='700' text-anchor='middle' fill='%230c121b'%3En%3C/text%3E%3C/svg%3E"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="grain"></div>
-    <div class="grid-overlay"></div>
-    <div class="ambient ambient-one"></div>
-    <div class="ambient ambient-two"></div>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="sidebar-brand" href="#home" data-route="home">
+          <span class="brand-mark">n</span>
+          <span>
+            <strong>Tech Care</strong>
+            <small>noon · CS analyst</small>
+          </span>
+        </a>
 
-    <header class="topbar">
-      <a class="brand" href="#home" data-route="home" aria-label="Tech Care home">
-        <span class="brand-mark">noon</span>
-        <span>
-          <strong>Tech Care</strong>
-          <small>CS Agentic Analyst</small>
-        </span>
-      </a>
+        <button class="sidebar-new" type="button" data-start-analysis>
+          <span>+</span> New analysis
+        </button>
 
-      <nav class="nav">
-        <a class="nav-link active" href="#home" data-route="home">Home</a>
-        <a class="nav-link" href="#analysis" data-route="analysis">New analysis</a>
-        <a class="nav-link" href="#history" data-route="history">History</a>
-      </nav>
-    </header>
+        <nav class="sidebar-nav">
+          <a class="side-link" href="#home" data-route="home" data-icon="home">Home</a>
+          <a class="side-link" href="#analysis" data-route="analysis" data-icon="work">Workspace</a>
+          <a class="side-link" href="#analytics" data-route="analytics" data-icon="chart">Analytics</a>
+          <a class="side-link" href="#history" data-route="history" data-icon="history">History</a>
+        </nav>
 
-    <main>
-      <section id="home" class="page active-page">
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <p class="eyebrow">Tech Care x noon intelligence</p>
-            <h1>Agentic CS analysis, shown like a living workspace.</h1>
-            <p class="hero-text">
-              A dark, minimalist command center where every agent explains what it is thinking,
-              waits for approval, then hands off charts and a long artifact-style report.
-            </p>
-            <div class="hero-actions">
-              <button class="primary-action" type="button" data-start-analysis>
-                Start new analysis
-              </button>
-              <button class="secondary-action" type="button" data-route-button="history">
-                View report history
-              </button>
+        <div class="recents">
+          <p class="recents-title">Recents</p>
+          <div id="recents-list" class="recents-list"></div>
+        </div>
+
+        <div class="sidebar-foot">
+          <span class="squad-dot"></span>
+          <div>
+            <strong>Tech Care squad</strong>
+            <small>4-agent pipeline</small>
+          </div>
+        </div>
+      </aside>
+
+      <main class="app-main">
+        <!-- HOME -->
+        <section id="home" class="page active-page">
+          <div class="composer-wrap">
+            <h1 id="greeting" class="greeting">Good evening, Tech Care</h1>
+            <p class="greeting-sub">Describe what to analyze and the agents will plan, query, cluster, and write it up.</p>
+
+            <div class="composer">
+              <textarea
+                id="analysis-objective"
+                rows="3"
+                placeholder="What should we analyze today?"
+              >Summarize seller support conversations, identify operational friction, and produce a leadership-ready report.</textarea>
+              <div class="composer-bar">
+                <span class="composer-hint">4 agents · plan → SQL → themes → report</span>
+                <button class="primary-action" type="button" data-start-flow>Run analysis</button>
+              </div>
+            </div>
+
+            <div class="chips">
+              <button class="chip" type="button" data-prompt="Summarize seller support conversations and surface the top operational friction points.">Summarize support</button>
+              <button class="chip" type="button" data-prompt="Find the contact drivers causing repeat tickets and recommend macros to reduce them.">Find friction</button>
+              <button class="chip" type="button" data-prompt="Build a weekly digest of unresolved fulfillment and returns escalations grouped by owner.">Weekly digest</button>
+              <button class="chip" type="button" data-prompt="Analyze new seller onboarding tickets and explain where the support journey breaks down.">Onboarding review</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- WORKSPACE -->
+        <section id="analysis" class="page">
+          <header class="view-head">
+            <div>
+              <h2 id="agent-title">Workspace</h2>
+              <p class="muted" id="objective-echo">Ready to launch the agent pipeline.</p>
+            </div>
+            <span id="run-status" class="status-pill">Idle</span>
+          </header>
+
+          <ol class="steps-row" aria-label="Analysis checkpoints">
+            <li class="step active" data-step-indicator="0"><span>1</span> Plan review</li>
+            <li class="step" data-step-indicator="1"><span>2</span> SQL review</li>
+            <li class="step" data-step-indicator="2"><span>3</span> Themes review</li>
+            <li class="step" data-step-indicator="3"><span>4</span> Report</li>
+          </ol>
+
+          <div id="chat-stream" class="chat-stream" aria-live="polite">
+            <div class="chat-bubble agent">
+              <small>Tech Care AI</small>
+              <p>Set an objective on the home screen and run the analysis. I will explain each step before asking you to approve it.</p>
             </div>
           </div>
 
-          <div class="hero-orbit" aria-label="Animated AI analysis preview">
-            <div class="pulse-ring ring-one"></div>
-            <div class="pulse-ring ring-two"></div>
-            <div class="bot-core">
-              <span class="bot-dot"></span>
-              <strong>Tech Care AI</strong>
-              <small>building artifact</small>
+          <article id="checkpoint-card" class="checkpoint-card hidden">
+            <div>
+              <p class="eyebrow">Checkpoint</p>
+              <h3 id="checkpoint-title"></h3>
+              <p id="checkpoint-copy"></p>
             </div>
-            <div class="orbit-card orbit-card-one">
-              <span>01</span>
-              Plan review
+            <ul id="checkpoint-list" class="checkpoint-list"></ul>
+            <div class="checkpoint-actions">
+              <button class="secondary-action danger" type="button" data-cancel-step>Cancel</button>
+              <button class="primary-action" type="button" data-approve-step>Approve & continue</button>
             </div>
-            <div class="orbit-card orbit-card-two">
-              <span>02</span>
-              SQL review
+          </article>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section id="analytics" class="page">
+          <header class="view-head">
+            <div>
+              <h2>Signals</h2>
+              <p class="muted">Review the charts before opening the written report.</p>
             </div>
-            <div class="orbit-card orbit-card-three">
-              <span>03</span>
-              Themes review
-            </div>
-            <div class="orbit-card orbit-card-four">
-              <span>04</span>
-              Report
-            </div>
+            <button class="primary-action" type="button" data-open-live-report>Open report</button>
+          </header>
+
+          <div class="analytics-grid">
+            <article class="metric-card">
+              <small>Conversations</small>
+              <strong>18,420</strong>
+              <span class="metric-trend">+12% vs. prior period</span>
+            </article>
+            <article class="metric-card">
+              <small>Avg. resolution</small>
+              <strong>9.4h</strong>
+              <span class="metric-trend warning">2.1h above target</span>
+            </article>
+            <article class="metric-card">
+              <small>Escalation share</small>
+              <strong>14.8%</strong>
+              <span class="metric-trend">-3.2 pts after triage</span>
+            </article>
+            <article class="metric-card">
+              <small>Seller sentiment</small>
+              <strong>71</strong>
+              <span class="metric-trend">Healthy, volatile</span>
+            </article>
           </div>
-        </div>
 
-        <div class="home-cards">
-          <article class="home-card">
-            <span class="card-number">4</span>
-            <h3>Sequential AI agents</h3>
-            <p>Plan, SQL, themes, and report agents move through a visible approval chain.</p>
-          </article>
-          <article class="home-card">
-            <span class="card-number">Live</span>
-            <h3>Thinking stream</h3>
-            <p>The loading state becomes a compact AI thought stream with motion and status.</p>
-          </article>
-          <article class="home-card">
-            <span class="card-number">Doc</span>
-            <h3>Artifact output</h3>
-            <p>The final answer opens as a long article artifact with evidence and next actions.</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="analysis" class="page">
-        <div class="workspace-shell">
-          <aside class="analysis-panel">
-            <p class="eyebrow">New analysis</p>
-            <h2>Human review checkpoints</h2>
-            <p class="muted">
-              Tech Care agents move one at a time. Approve the output to continue or cancel the run.
-            </p>
-
-            <div class="request-card">
-              <label for="analysis-objective">Prompt the analyst</label>
-              <textarea id="analysis-objective" rows="6">
-Summarize seller support conversations, identify operational friction, and produce a leadership-ready Tech Care artifact with charts, evidence, and recommendations.</textarea>
-              <button class="primary-action full-width" type="button" data-start-flow>
-                Launch agent squad
-              </button>
-            </div>
-
-            <ol class="stepper" aria-label="Analysis checkpoints">
-              <li class="step active" data-step-indicator="0">
-                <span>1</span>
-                <div>
-                  <strong>Plan review</strong>
-                  <small>Scope and sampling</small>
-                </div>
-              </li>
-              <li class="step" data-step-indicator="1">
-                <span>2</span>
-                <div>
-                  <strong>SQL review</strong>
-                  <small>Query strategy</small>
-                </div>
-              </li>
-              <li class="step" data-step-indicator="2">
-                <span>3</span>
-                <div>
-                  <strong>Themes review</strong>
-                  <small>Pattern extraction</small>
-                </div>
-              </li>
-              <li class="step" data-step-indicator="3">
-                <span>4</span>
-                <div>
-                  <strong>Report</strong>
-                  <small>Executive answer</small>
-                </div>
-              </li>
-            </ol>
-          </aside>
-
-          <section class="agent-console" aria-live="polite">
-            <div class="console-header">
-              <div>
-                <p class="eyebrow">Claude-style workspace</p>
-                <h2 id="agent-title">Ready to launch</h2>
+          <div class="chart-grid">
+            <article class="chart-card">
+              <div class="chart-title">
+                <h3>Top contact drivers</h3>
+                <span>Last 4 weeks</span>
               </div>
-              <span id="run-status" class="status-pill">Idle</span>
-            </div>
-
-            <div id="chat-stream" class="chat-stream">
-              <div class="chat-bubble agent">
-                <small>Tech Care AI</small>
-                <p>Set the objective, then launch the agent squad. I will explain every step before asking for approval.</p>
-              </div>
-            </div>
-
-            <article id="checkpoint-card" class="checkpoint-card hidden">
-              <div>
-                <p class="eyebrow">Checkpoint preview</p>
-                <h3 id="checkpoint-title"></h3>
-                <p id="checkpoint-copy"></p>
-              </div>
-              <ul id="checkpoint-list" class="checkpoint-list"></ul>
-              <div class="checkpoint-actions">
-                <button class="secondary-action danger" type="button" data-cancel-step>Cancel analysis</button>
-                <button class="primary-action" type="button" data-approve-step>Approve and continue</button>
+              <div class="bar-chart">
+                <div style="--value: 92"><span>Payments</span><b>32%</b></div>
+                <div style="--value: 78"><span>Catalog</span><b>27%</b></div>
+                <div style="--value: 64"><span>Fulfillment</span><b>21%</b></div>
+                <div style="--value: 49"><span>Returns</span><b>13%</b></div>
+                <div style="--value: 31"><span>Ads</span><b>7%</b></div>
               </div>
             </article>
-          </section>
-        </div>
-      </section>
 
-      <section id="analytics" class="page">
-        <div class="section-heading">
-          <p class="eyebrow">Pre-report analytics</p>
-          <h2>Support signals the agents found</h2>
-          <p class="muted">Review the chart layer before opening the final report.</p>
-        </div>
-
-        <div class="analytics-grid">
-          <article class="metric-card">
-            <small>Total analyzed conversations</small>
-            <strong>18,420</strong>
-            <span class="metric-trend">+12% vs. prior period</span>
-          </article>
-          <article class="metric-card">
-            <small>Avg. resolution time</small>
-            <strong>9.4h</strong>
-            <span class="metric-trend warning">2.1h above target</span>
-          </article>
-          <article class="metric-card">
-            <small>Escalation share</small>
-            <strong>14.8%</strong>
-            <span class="metric-trend">-3.2 pts after triage</span>
-          </article>
-          <article class="metric-card">
-            <small>Seller sentiment</small>
-            <strong>71</strong>
-            <span class="metric-trend">Healthy but volatile</span>
-          </article>
-        </div>
-
-        <div class="chart-grid">
-          <article class="chart-card">
-            <div class="chart-title">
-              <h3>Top contact drivers</h3>
-              <span>Last 4 weeks</span>
-            </div>
-            <div class="bar-chart">
-              <div style="--value: 92"><span>Payments</span><b>32%</b></div>
-              <div style="--value: 78"><span>Catalog</span><b>27%</b></div>
-              <div style="--value: 64"><span>Fulfillment</span><b>21%</b></div>
-              <div style="--value: 49"><span>Returns</span><b>13%</b></div>
-              <div style="--value: 31"><span>Ads</span><b>7%</b></div>
-            </div>
-          </article>
-
-          <article class="chart-card">
-            <div class="chart-title">
-              <h3>Conversation health</h3>
-              <span>AI classified</span>
-            </div>
-            <div class="donut-wrap">
-              <div class="donut-chart" aria-label="Conversation health donut chart"></div>
-              <ul class="legend">
-                <li><span class="legend-dot positive"></span> Resolved cleanly 58%</li>
-                <li><span class="legend-dot warning"></span> Needs follow-up 28%</li>
-                <li><span class="legend-dot danger"></span> Escalated 14%</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="chart-card wide">
-            <div class="chart-title">
-              <h3>Agent confidence by stage</h3>
-              <span>Checkpoint validated</span>
-            </div>
-            <div class="line-chart" aria-label="Confidence trend chart">
-              <span class="line-point p1">Plan 88</span>
-              <span class="line-point p2">SQL 91</span>
-              <span class="line-point p3">Themes 86</span>
-              <span class="line-point p4">Report 94</span>
-              <svg viewBox="0 0 600 180" role="presentation">
-                <polyline points="35,105 205,70 375,95 555,48" />
-                <circle cx="35" cy="105" r="7" />
-                <circle cx="205" cy="70" r="7" />
-                <circle cx="375" cy="95" r="7" />
-                <circle cx="555" cy="48" r="7" />
-              </svg>
-            </div>
-          </article>
-        </div>
-
-        <div class="analytics-actions">
-          <button class="secondary-action" type="button" data-route-button="analysis">Back to checkpoints</button>
-          <button class="primary-action" type="button" data-route-button="report">Open final report</button>
-        </div>
-      </section>
-
-      <section id="report" class="page">
-        <div class="report-shell">
-          <article class="report-card artifact">
-            <div class="artifact-toolbar">
-              <div>
-                <p class="eyebrow">AI artifact</p>
-                <h2>Tech Care seller support intelligence brief</h2>
+            <article class="chart-card">
+              <div class="chart-title">
+                <h3>Conversation health</h3>
+                <span>AI classified</span>
               </div>
-              <span class="artifact-status">Generated by 4 agents</span>
-            </div>
-
-            <div class="artifact-meta">
-              <span>18,420 conversations</span>
-              <span>4-week lookback</span>
-              <span>Seller support</span>
-              <span>Confidence 94%</span>
-            </div>
-
-            <div class="artifact-body">
-              <section class="article-section">
-                <h3>Executive summary</h3>
-                <p>
-                  Tech Care should treat the current seller-support pattern as an operational clarity problem, not only a queue-volume problem.
-                  The highest-frequency conversations are clustered around payment reconciliation, catalog rejection loops, and fulfillment ownership.
-                  These topics create repeat contacts because sellers can see the issue, but cannot see the next owner, next action, or expected timing.
-                </p>
-                <p>
-                  The analysis suggests that the most effective response is a visible support-intelligence layer: clearer status messages,
-                  better first-response macros, and weekly unresolved-issue digests for the teams that own follow-through.
-                </p>
-              </section>
-
-              <section class="article-section">
-                <h3>What changed in the last four weeks</h3>
-                <div class="article-callout">
-                  Payment-related conversations are the clearest signal. They represent the largest share of contacts and show the strongest
-                  repeat-contact behavior when sellers ask about invoice adjustments, payout timing, and reconciliation proof.
-                </div>
-                <p>
-                  Catalog conversations remain highly concentrated among newer sellers. These sellers tend to ask multiple versions of the same
-                  question because the rejection reason is visible, but the expected fix is not specific enough. Fulfillment and returns create
-                  a different kind of friction: sellers often know that something is delayed, but they do not know whether support, warehouse,
-                  or courier operations owns the next step.
-                </p>
-              </section>
-
-              <section class="article-section">
-                <h3>Evidence by theme</h3>
-                <div class="evidence-grid">
-                  <div>
-                    <span class="insight-label">Priority theme</span>
-                    <strong>Payment reconciliation</strong>
-                    <p>High-volume sellers repeatedly ask for payout status clarity after invoice adjustments.</p>
-                  </div>
-                  <div>
-                    <span class="insight-label">Risk segment</span>
-                    <strong>New marketplace sellers</strong>
-                    <p>First 45-day sellers show higher confusion around SKU quality rules and support routing.</p>
-                  </div>
-                  <div>
-                    <span class="insight-label">Best intervention</span>
-                    <strong>Guided support macros</strong>
-                    <p>Macros that include next action, owner, and expected timing reduce repeat contact intent.</p>
-                  </div>
-                </div>
-              </section>
-
-              <section class="article-section">
-                <h3>Recommended operating moves</h3>
-                <ol class="recommendations">
-                  <li>
-                    Publish a payment-status explanation card inside the partner support journey, including payout ETA, invoice adjustment reason,
-                    and the finance owner responsible for the next update.
-                  </li>
-                  <li>
-                    Add catalog rejection examples to the first response for new seller tickets, with a before-and-after SKU example and the exact
-                    attribute that needs correction.
-                  </li>
-                  <li>
-                    Create a weekly Tech Care digest for unresolved fulfillment and returns escalations, grouped by queue owner and aging bucket.
-                  </li>
-                  <li>
-                    Track repeat-contact reduction by theme after each macro or help-center card launches. Use that as the main success metric,
-                    not just first-response time.
-                  </li>
-                </ol>
-              </section>
-
-              <section class="article-section">
-                <h3>Suggested narrative for leadership</h3>
-                <p>
-                  Seller support friction is being driven by uncertainty after an issue is already known. The seller does not need more generic
-                  reassurance; they need a precise answer that explains what happened, who owns the next step, and when the next update should
-                  arrive. Tech Care can reduce avoidable repeat contacts by turning the agent response into a status artifact.
-                </p>
-                <p>
-                  The four-agent workflow should continue to be used as a reviewable pipeline: planning validates scope, SQL validates evidence,
-                  themes validate interpretation, and the final report packages the decision. Keeping approvals between stages makes the output
-                  safer while still making the interface feel fast and intelligent.
-                </p>
-              </section>
-            </div>
-          </article>
-
-          <aside class="ask-card">
-            <h3>Ask AI about this report</h3>
-            <div id="report-qa" class="qa-thread">
-              <div class="chat-bubble agent compact">
-                <small>Report AI</small>
-                <p>Ask for a deeper cut by market, theme, queue, or operational owner.</p>
+              <div class="donut-wrap">
+                <div class="donut-chart" aria-label="Conversation health donut chart"></div>
+                <ul class="legend">
+                  <li><span class="legend-dot positive"></span> Resolved cleanly 58%</li>
+                  <li><span class="legend-dot warning"></span> Needs follow-up 28%</li>
+                  <li><span class="legend-dot danger"></span> Escalated 14%</li>
+                </ul>
               </div>
+            </article>
+
+            <article class="chart-card wide">
+              <div class="chart-title">
+                <h3>Agent confidence by stage</h3>
+                <span>Checkpoint validated</span>
+              </div>
+              <div class="line-chart" aria-label="Confidence trend chart">
+                <span class="line-point p1">Plan 88</span>
+                <span class="line-point p2">SQL 91</span>
+                <span class="line-point p3">Themes 86</span>
+                <span class="line-point p4">Report 94</span>
+                <svg viewBox="0 0 600 180" role="presentation">
+                  <polyline points="35,105 205,70 375,95 555,48" />
+                  <circle cx="35" cy="105" r="7" />
+                  <circle cx="205" cy="70" r="7" />
+                  <circle cx="375" cy="95" r="7" />
+                  <circle cx="555" cy="48" r="7" />
+                </svg>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- REPORT (dynamic, full screen) -->
+        <section id="report" class="page">
+          <div id="report-view" class="report-view"></div>
+        </section>
+
+        <!-- HISTORY -->
+        <section id="history" class="page">
+          <header class="view-head">
+            <div>
+              <h2>History</h2>
+              <p class="muted">Open a report to read it in full and keep asking questions.</p>
             </div>
-            <form id="report-question-form" class="question-form">
-              <input id="report-question" type="text" placeholder="Ask about the report..." />
-              <button class="primary-action" type="submit">Ask</button>
-            </form>
-          </aside>
-        </div>
-      </section>
-
-      <section id="history" class="page">
-        <div class="section-heading">
-          <p class="eyebrow">History</p>
-          <h2>Previous Tech Care reports</h2>
-          <p class="muted">Open an old report and continue the conversation with AI.</p>
-        </div>
-
-        <div class="history-layout">
+          </header>
           <div id="history-list" class="history-list"></div>
-          <article class="history-detail">
-            <div id="history-detail-content"></div>
-            <div class="ask-card embedded">
-              <h3>Ask AI about selected report</h3>
-              <div id="history-qa" class="qa-thread">
-                <div class="chat-bubble agent compact">
-                  <small>History AI</small>
-                  <p>Select a report, then ask for context or next-step recommendations.</p>
-                </div>
-              </div>
-              <form id="history-question-form" class="question-form">
-                <input id="history-question" type="text" placeholder="Ask about selected report..." />
-                <button class="primary-action" type="submit">Ask</button>
-              </form>
-            </div>
-          </article>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </div>
 
     <script src="app.js"></script>
   </body>

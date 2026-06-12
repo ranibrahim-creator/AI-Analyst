@@ -1,26 +1,24 @@
 const pages = document.querySelectorAll(".page");
-const navLinks = document.querySelectorAll("[data-route]");
-const routeButtons = document.querySelectorAll("[data-route-button]");
+const routeLinks = document.querySelectorAll("[data-route]");
 const startAnalysisButton = document.querySelector("[data-start-analysis]");
 const startFlowButton = document.querySelector("[data-start-flow]");
 const approveButton = document.querySelector("[data-approve-step]");
 const cancelButton = document.querySelector("[data-cancel-step]");
+const openLiveReportButton = document.querySelector("[data-open-live-report]");
 const chatStream = document.querySelector("#chat-stream");
 const runStatus = document.querySelector("#run-status");
 const agentTitle = document.querySelector("#agent-title");
+const objectiveEcho = document.querySelector("#objective-echo");
 const checkpointCard = document.querySelector("#checkpoint-card");
 const checkpointTitle = document.querySelector("#checkpoint-title");
 const checkpointCopy = document.querySelector("#checkpoint-copy");
 const checkpointList = document.querySelector("#checkpoint-list");
 const objectiveInput = document.querySelector("#analysis-objective");
 const historyList = document.querySelector("#history-list");
-const historyDetail = document.querySelector("#history-detail-content");
-const reportQuestionForm = document.querySelector("#report-question-form");
-const reportQuestion = document.querySelector("#report-question");
-const reportQa = document.querySelector("#report-qa");
-const historyQuestionForm = document.querySelector("#history-question-form");
-const historyQuestion = document.querySelector("#history-question");
-const historyQa = document.querySelector("#history-qa");
+const recentsList = document.querySelector("#recents-list");
+const reportView = document.querySelector("#report-view");
+const greeting = document.querySelector("#greeting");
+const chipButtons = document.querySelectorAll(".chip");
 
 const agents = [
   {
@@ -28,15 +26,15 @@ const agents = [
     step: "Plan review",
     status: "Mapping objective",
     thoughts: [
-      "I am reading the Tech Care prompt and deciding what evidence belongs in the artifact.",
-      "I am turning the request into a checkpointed plan with assumptions the reviewer can approve.",
-      "I am shaping the final article so it includes owners, timing, and action language."
+      "Reading the objective and deciding what evidence belongs in the report.",
+      "Turning the request into a checkpointed plan with assumptions you can approve.",
+      "Shaping the final article so it includes owners, timing, and clear actions."
     ],
-    copy: "The plan agent proposes the artifact scope before any query work starts.",
+    copy: "Proposed scope before any query work starts.",
     bullets: [
-      "Target conversations: seller support tickets, help-center chat, escalation notes.",
-      "Primary lens: payment, catalog, fulfillment, returns, ads, and onboarding friction.",
-      "Sampling guardrail: compare high-volume sellers with first-45-day sellers."
+      "Target: seller support tickets, help-center chat, escalation notes.",
+      "Lens: payment, catalog, fulfillment, returns, ads, onboarding.",
+      "Compare high-volume sellers with first-45-day sellers."
     ]
   },
   {
@@ -44,15 +42,15 @@ const agents = [
     step: "SQL review",
     status: "Designing query",
     thoughts: [
-      "I am drafting the query shape for ticket volume, resolution time, and escalation join paths.",
-      "I am choosing metrics that can feed both charts and a written support narrative.",
-      "I am flagging fields that need human review before extraction proceeds."
+      "Drafting the query shape for ticket volume, resolution time, and escalations.",
+      "Choosing metrics that feed both charts and a written narrative.",
+      "Flagging fields that need human review before extraction."
     ],
-    copy: "The SQL agent translates the approved plan into an auditable extraction strategy.",
+    copy: "Auditable extraction strategy from the approved plan.",
     bullets: [
-      "Aggregate tickets by contact driver, queue, market, and seller tenure.",
-      "Join escalation events to resolution timestamps for operational bottleneck detection.",
-      "Return only the fields needed for analysis and report traceability."
+      "Aggregate by contact driver, queue, market, and seller tenure.",
+      "Join escalation events to resolution timestamps.",
+      "Return only the fields needed for analysis and traceability."
     ]
   },
   {
@@ -60,92 +58,210 @@ const agents = [
     step: "Themes review",
     status: "Clustering themes",
     thoughts: [
-      "I am grouping repeated seller pain points into measurable service themes.",
-      "I am separating sentiment from urgency so noisy messages do not dominate the artifact.",
-      "I am comparing the top themes against recent support macro usage and repeat-contact patterns."
+      "Grouping repeated seller pain points into measurable themes.",
+      "Separating sentiment from urgency so noise does not dominate.",
+      "Comparing top themes against recent macro usage and repeat contacts."
     ],
-    copy: "The themes agent prepares the qualitative layer that explains why the metrics moved.",
+    copy: "Qualitative layer that explains why the metrics moved.",
     bullets: [
-      "Payment reconciliation appears as the highest-friction theme.",
-      "Catalog rejections are concentrated among newer sellers and long-tail SKUs.",
-      "Fulfillment and returns issues create repeat contacts when ownership is unclear."
+      "Payment reconciliation is the highest-friction theme.",
+      "Catalog rejections concentrate among newer sellers.",
+      "Fulfillment issues create repeat contacts when ownership is unclear."
     ]
   },
   {
     name: "Report Agent",
-    step: "Report approval",
+    step: "Report",
     status: "Composing report",
     thoughts: [
-      "I am converting metrics and themes into a long artifact-style article.",
-      "I am ranking recommendations by operational impact and clarity for Tech Care owners.",
-      "I am preparing the analytics preview before the final artifact opens."
+      "Converting metrics and themes into a written article.",
+      "Ranking recommendations by operational impact and clarity.",
+      "Preparing the analytics preview before the report opens."
     ],
-    copy: "The report agent is ready to hand off charts and the final Tech Care artifact.",
+    copy: "Ready to hand off charts and the written report.",
     bullets: [
-      "Include executive summary, key risks, evidence, narrative interpretation, and recommended support actions.",
-      "Show chart preview before the written report so reviewers can validate the signal.",
-      "Save the completed artifact into history for follow-up questions."
+      "Executive summary, evidence, interpretation, and actions.",
+      "Charts preview first so reviewers can validate the signal.",
+      "Save the report to history for follow-up questions."
     ]
   }
 ];
 
+const liveReportTemplate = {
+  id: "rpt-live",
+  tag: "New",
+  title: "Seller support intelligence brief",
+  date: "Jun 12, 2026",
+  focus: "Payments, catalog, fulfillment, sentiment",
+  meta: ["18,420 conversations", "4-week lookback", "Seller support", "Confidence 94%"],
+  sections: [
+    {
+      h3: "Executive summary",
+      body: [
+        "Treat the current seller-support pattern as an operational clarity problem, not only a queue-volume problem. The highest-frequency conversations cluster around payment reconciliation, catalog rejection loops, and fulfillment ownership.",
+        "These topics create repeat contacts because sellers can see the issue, but cannot see the next owner, next action, or expected timing. The most effective response is a visible support-intelligence layer: clearer status messages, better first-response macros, and weekly unresolved-issue digests."
+      ]
+    },
+    {
+      h3: "What changed in the last four weeks",
+      callout:
+        "Payment-related conversations are the clearest signal — the largest share of contacts and the strongest repeat-contact behavior when sellers ask about invoice adjustments, payout timing, and reconciliation proof.",
+      body: [
+        "Catalog conversations remain concentrated among newer sellers, who ask multiple versions of the same question because the rejection reason is visible but the expected fix is not specific enough.",
+        "Fulfillment and returns create a different friction: sellers know something is delayed, but not whether support, warehouse, or courier operations owns the next step."
+      ]
+    },
+    {
+      h3: "Evidence by theme",
+      evidence: [
+        { label: "Priority theme", title: "Payment reconciliation", text: "High-volume sellers repeatedly ask for payout status clarity after invoice adjustments." },
+        { label: "Risk segment", title: "New marketplace sellers", text: "First 45-day sellers show higher confusion around SKU quality and routing." },
+        { label: "Best intervention", title: "Guided support macros", text: "Macros with next action, owner, and timing reduce repeat-contact intent." }
+      ]
+    },
+    {
+      h3: "Suggested narrative for leadership",
+      body: [
+        "Seller support friction is driven by uncertainty after an issue is already known. The seller does not need generic reassurance; they need a precise answer that explains what happened, who owns the next step, and when the next update arrives.",
+        "Keep the four-agent workflow as a reviewable pipeline: planning validates scope, SQL validates evidence, themes validate interpretation, and the report packages the decision. Approvals between stages keep the output safe while the interface still feels fast."
+      ]
+    }
+  ],
+  recommendations: [
+    "Publish a payment-status card in the partner journey with payout ETA, adjustment reason, and the finance owner.",
+    "Add catalog rejection examples to the first response for new sellers, with the exact attribute to correct.",
+    "Create a weekly digest for unresolved fulfillment and returns escalations, grouped by owner and aging bucket.",
+    "Track repeat-contact reduction by theme after each macro launches — the main success metric, not just first-response time."
+  ]
+};
+
 let currentStep = 0;
 let flowRunning = false;
-let selectedHistoryId = "rpt-042";
 let runToken = 0;
+let openReportId = null;
+let reportContext = "history";
+let liveReportSaved = false;
+
 let historyReports = [
   {
     id: "rpt-042",
-    tag: "Completed",
-    title: "Payment dispute and payout clarity report",
+    tag: "Payments",
+    title: "Payment dispute and payout clarity",
     date: "Jun 10, 2026",
-    summary: "Detected a high repeat-contact pattern around payout adjustments after invoice reconciliation.",
-    focus: "Payments, reconciliation, invoice adjustments",
-    actions: ["Add payout status explanations", "Create macro for invoice adjustment disputes", "Route high-risk sellers to finance support"]
+    focus: "Payments · reconciliation · invoice adjustments",
+    meta: ["12,140 conversations", "Finance + support", "Confidence 92%"],
+    sections: [
+      {
+        h3: "Executive summary",
+        body: [
+          "Repeat contacts around payouts spike after invoice adjustments. Sellers can see a changed amount but cannot see why it changed or when the corrected payout lands.",
+          "A single seller-visible status explanation removes most of the avoidable follow-up volume in this theme."
+        ]
+      },
+      {
+        h3: "Evidence by theme",
+        evidence: [
+          { label: "Top question", title: "Where is my payout?", text: "Asked repeatedly within 48h of an invoice adjustment." },
+          { label: "Driver", title: "Invoice adjustments", text: "Adjustments without a reason field create disputes." },
+          { label: "Owner gap", title: "Finance vs. support", text: "Sellers cannot tell which team owns the resolution." }
+        ]
+      }
+    ],
+    recommendations: [
+      "Add payout status explanations with reason and expected date.",
+      "Create a macro for invoice adjustment disputes.",
+      "Route high-risk sellers to finance support directly."
+    ]
   },
   {
     id: "rpt-039",
-    tag: "Completed",
-    title: "New seller onboarding friction report",
+    tag: "Onboarding",
+    title: "New seller onboarding friction",
     date: "Jun 03, 2026",
-    summary: "Found catalog rejection confusion and repeated questions around SKU quality rules.",
-    focus: "Catalog, onboarding, SKU quality",
-    actions: ["Add rejection examples", "Prompt sellers with missing attributes", "Improve first-response article links"]
+    focus: "Catalog · onboarding · SKU quality",
+    meta: ["8,760 conversations", "First-45-day sellers", "Confidence 90%"],
+    sections: [
+      {
+        h3: "Executive summary",
+        body: [
+          "New sellers repeat catalog questions because rejection reasons are visible but the fix is not specific. The same SKU is resubmitted several times.",
+          "First responses that include a concrete example fix sharply reduce resubmission loops."
+        ]
+      },
+      {
+        h3: "Evidence by theme",
+        evidence: [
+          { label: "Pattern", title: "Rejection loops", text: "Multiple resubmissions of the same SKU within a week." },
+          { label: "Gap", title: "Vague reasons", text: "Rejection text lacks the attribute that needs correcting." },
+          { label: "Segment", title: "Long-tail SKUs", text: "Concentrated in newer sellers and niche categories." }
+        ]
+      }
+    ],
+    recommendations: [
+      "Add catalog rejection examples to first responses.",
+      "Prompt sellers about missing attributes before submission.",
+      "Improve first-response article links for onboarding."
+    ]
   },
   {
     id: "rpt-034",
-    tag: "Completed",
-    title: "Fulfillment escalation trend report",
+    tag: "Fulfillment",
+    title: "Fulfillment escalation trend",
     date: "May 27, 2026",
-    summary: "Escalations increased when sellers could not identify whether support, warehouse, or courier teams owned the next step.",
-    focus: "Fulfillment, returns, escalation ownership",
-    actions: ["Expose owner field in replies", "Add ETA bands", "Review warehouse handoff queue"]
+    focus: "Fulfillment · returns · escalation ownership",
+    meta: ["6,410 conversations", "Ops + courier", "Confidence 88%"],
+    sections: [
+      {
+        h3: "Executive summary",
+        body: [
+          "Escalations rose when sellers could not tell whether support, warehouse, or courier operations owned the next step. The delay was visible; the owner was not.",
+          "Exposing the owner and an ETA band in replies reduces escalation pressure."
+        ]
+      },
+      {
+        h3: "Evidence by theme",
+        evidence: [
+          { label: "Driver", title: "Ownership ambiguity", text: "No clear next owner shown to the seller." },
+          { label: "Pattern", title: "Aged escalations", text: "Tickets re-opened while waiting on handoffs." },
+          { label: "Hot spot", title: "Warehouse handoff", text: "Most delays appear at the warehouse-to-courier seam." }
+        ]
+      }
+    ],
+    recommendations: [
+      "Expose the owner field in replies.",
+      "Add ETA bands to fulfillment updates.",
+      "Review the warehouse handoff queue weekly."
+    ]
   }
 ];
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[character];
+  });
+}
+
 function setRoute(route) {
   pages.forEach((page) => page.classList.toggle("active-page", page.id === route));
-  navLinks.forEach((link) => link.classList.toggle("active", link.dataset.route === route));
+  routeLinks.forEach((link) => link.classList.toggle("active", link.dataset.route === route));
 
   if (route === "history") {
     renderHistory();
   }
 
   window.location.hash = route;
+  document.querySelector(".app-main").scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function escapeHtml(value) {
-  return value.replace(/[&<>"']/g, (character) => {
-    const entities = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    };
-
-    return entities[character];
-  });
+function setGreeting() {
+  const hour = new Date().getHours();
+  let part = "evening";
+  if (hour < 12) {
+    part = "morning";
+  } else if (hour < 18) {
+    part = "afternoon";
+  }
+  greeting.textContent = `Good ${part}, Tech Care`;
 }
 
 function addBubble(kind, speaker, message, target = chatStream) {
@@ -160,7 +276,7 @@ function addBubble(kind, speaker, message, target = chatStream) {
 function addThinkingBubble(agent) {
   const bubble = document.createElement("div");
   bubble.className = "chat-bubble agent";
-  bubble.innerHTML = `<small>${agent}</small><p class="thinking" aria-label="${agent} is thinking"><i></i><i></i><i></i></p>`;
+  bubble.innerHTML = `<small>${escapeHtml(agent)}</small><p class="thinking" aria-label="${escapeHtml(agent)} is thinking"><i></i><i></i><i></i></p>`;
   chatStream.appendChild(bubble);
   chatStream.scrollTop = chatStream.scrollHeight;
   return bubble;
@@ -176,7 +292,7 @@ function updateStepIndicators() {
 function showCheckpoint(agent) {
   checkpointTitle.textContent = agent.step;
   checkpointCopy.textContent = agent.copy;
-  checkpointList.innerHTML = agent.bullets.map((bullet) => `<li>${bullet}</li>`).join("");
+  checkpointList.innerHTML = agent.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("");
   checkpointCard.classList.remove("hidden");
   approveButton.disabled = false;
   cancelButton.disabled = false;
@@ -206,15 +322,13 @@ function runAgentStep() {
       if (activeRun !== runToken || !flowRunning) {
         return;
       }
-
       const thinking = addThinkingBubble(agent.name);
       setTimeout(() => {
         if (activeRun !== runToken || !flowRunning) {
           thinking.remove();
           return;
         }
-
-        thinking.innerHTML = `<small>${agent.name}</small><p>${thought}</p>`;
+        thinking.innerHTML = `<small>${escapeHtml(agent.name)}</small><p>${escapeHtml(thought)}</p>`;
         chatStream.scrollTop = chatStream.scrollHeight;
 
         if (index === agent.thoughts.length - 1) {
@@ -222,16 +336,14 @@ function runAgentStep() {
             if (activeRun !== runToken || !flowRunning) {
               return;
             }
-
             runStatus.textContent = "Needs approval";
             runStatus.classList.remove("running");
             showCheckpoint(agent);
-          }, 450);
+          }, 400);
         }
-      }, 520);
+      }, 480);
     }, delay);
-
-    delay += 980;
+    delay += 920;
   });
 }
 
@@ -239,9 +351,13 @@ function startFlow() {
   runToken += 1;
   currentStep = 0;
   flowRunning = true;
+  liveReportSaved = false;
   startFlowButton.disabled = true;
   chatStream.innerHTML = "";
-  addBubble("user", "Reviewer", objectiveInput.value.trim() || "Run a Tech Care seller support analysis.");
+  const objective = objectiveInput.value.trim() || "Run a seller support analysis.";
+  objectiveEcho.textContent = objective;
+  setRoute("analysis");
+  addBubble("user", "You", objective);
   runAgentStep();
 }
 
@@ -251,16 +367,12 @@ function finishFlow() {
   checkpointCard.classList.add("hidden");
   currentStep = agents.length;
   updateStepIndicators();
-  runStatus.textContent = "Analytics ready";
+  runStatus.textContent = "Report ready";
   runStatus.classList.remove("running");
   agentTitle.textContent = "Analysis complete";
-  addBubble(
-    "agent",
-    "Tech Care AI",
-    "All checkpoints are approved. I prepared the analytics layer before opening the final artifact."
-  );
-  saveGeneratedReport();
-  setTimeout(() => setRoute("analytics"), 650);
+  addBubble("agent", "Tech Care AI", "All checkpoints approved. Charts are ready, then the written report opens.");
+  saveLiveReport();
+  setTimeout(() => setRoute("analytics"), 550);
 }
 
 function cancelFlow() {
@@ -271,113 +383,163 @@ function cancelFlow() {
   runStatus.textContent = "Cancelled";
   runStatus.classList.remove("running");
   agentTitle.textContent = "Analysis cancelled";
-  addBubble("user", "Reviewer", "Cancel analysis.");
-  addBubble("agent", "Tech Care AI", "The run is cancelled. You can adjust the objective and launch the squad again.");
+  addBubble("user", "You", "Cancel.");
+  addBubble("agent", "Tech Care AI", "Run cancelled. Adjust the objective on home and run again.");
   updateStepIndicators();
 }
 
-function saveGeneratedReport() {
-  const generatedId = "rpt-live";
-  const exists = historyReports.some((report) => report.id === generatedId);
-
-  if (exists) {
+function saveLiveReport() {
+  if (liveReportSaved) {
     return;
   }
+  const objective = objectiveInput.value.trim();
+  const report = { ...liveReportTemplate };
+  if (objective) {
+    report.prompt = objective;
+  }
+  historyReports = [report, ...historyReports.filter((item) => item.id !== "rpt-live")];
+  liveReportSaved = true;
+  renderRecents();
+}
 
-  historyReports = [
-    {
-      id: generatedId,
-      tag: "New",
-      title: "Tech Care seller support intelligence brief",
-      date: "Jun 11, 2026",
-      summary: "Live four-agent artifact covering payment, catalog, fulfillment, seller sentiment, evidence, and recommendations.",
-      focus: "Payments, catalog, fulfillment, returns, seller sentiment",
-      actions: ["Publish payment-status card", "Improve catalog rejection replies", "Create weekly unresolved-escalation digest"]
-    },
-    ...historyReports
-  ];
-  selectedHistoryId = generatedId;
+function getReport(id) {
+  return historyReports.find((report) => report.id === id) || historyReports[0];
+}
+
+function renderReport(report, context) {
+  openReportId = report.id;
+  reportContext = context;
+
+  const backLabel = context === "history" ? "Back to history" : "Back to analytics";
+  const meta = (report.meta || []).map((item) => `<span>${escapeHtml(item)}</span>`).join("");
+
+  const sections = (report.sections || [])
+    .map((section) => {
+      let inner = `<h3>${escapeHtml(section.h3)}</h3>`;
+      if (section.callout) {
+        inner += `<div class="article-callout">${escapeHtml(section.callout)}</div>`;
+      }
+      if (section.body) {
+        inner += section.body.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
+      }
+      if (section.evidence) {
+        inner +=
+          `<div class="evidence-grid">` +
+          section.evidence
+            .map(
+              (item) =>
+                `<div><span class="insight-label">${escapeHtml(item.label)}</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.text)}</p></div>`
+            )
+            .join("") +
+          `</div>`;
+      }
+      return `<section class="article-section">${inner}</section>`;
+    })
+    .join("");
+
+  const recommendations = (report.recommendations || [])
+    .map((item) => `<li>${escapeHtml(item)}</li>`)
+    .join("");
+
+  reportView.innerHTML = `
+    <button class="report-back" type="button" data-report-back>${escapeHtml(backLabel)}</button>
+    <article class="report-doc">
+      <header class="report-doc-head">
+        <span class="doc-tag">${escapeHtml(report.tag)}</span>
+        <h2>${escapeHtml(report.title)}</h2>
+        <p class="muted">${escapeHtml(report.date)} · ${escapeHtml(report.focus)}</p>
+        <div class="artifact-meta">${meta}</div>
+      </header>
+      <div class="artifact-body">
+        ${sections}
+        <section class="article-section">
+          <h3>Recommended actions</h3>
+          <ol class="recommendations">${recommendations}</ol>
+        </section>
+      </div>
+
+      <section class="report-ask">
+        <h3>Ask about this report</h3>
+        <div id="report-qa" class="qa-thread">
+          <div class="chat-bubble agent compact">
+            <small>Report AI</small>
+            <p>Ask for a deeper cut by market, theme, queue, or operational owner.</p>
+          </div>
+        </div>
+        <form id="report-question-form" class="composer report-composer">
+          <input id="report-question" type="text" placeholder="Ask a follow-up about this report..." autocomplete="off" />
+          <button class="primary-action" type="submit">Ask</button>
+        </form>
+      </section>
+    </article>
+  `;
+
+  reportView.querySelector("[data-report-back]").addEventListener("click", () => {
+    setRoute(context === "history" ? "history" : "analytics");
+  });
+
+  const form = reportView.querySelector("#report-question-form");
+  const input = reportView.querySelector("#report-question");
+  const thread = reportView.querySelector("#report-qa");
+  form.addEventListener("submit", (event) => handleQuestion(event, input, thread, report.title));
+}
+
+function openReport(id, context) {
+  renderReport(getReport(id), context);
+  setRoute("report");
 }
 
 function renderHistory() {
   historyList.innerHTML = historyReports
     .map(
       (report) => `
-      <button class="history-item ${report.id === selectedHistoryId ? "active" : ""}" type="button" data-history-id="${report.id}">
-        <span>${report.tag}</span>
-        <strong>${report.title}</strong>
-        <small>${report.date} - ${report.focus}</small>
-      </button>
-    `
+      <button class="history-item" type="button" data-history-id="${escapeHtml(report.id)}">
+        <span>${escapeHtml(report.tag)}</span>
+        <strong>${escapeHtml(report.title)}</strong>
+        <small>${escapeHtml(report.date)} · ${escapeHtml(report.focus)}</small>
+      </button>`
     )
     .join("");
 
-  document.querySelectorAll("[data-history-id]").forEach((item) => {
-    item.addEventListener("click", () => {
-      selectedHistoryId = item.dataset.historyId;
-      renderHistory();
-    });
+  historyList.querySelectorAll("[data-history-id]").forEach((item) => {
+    item.addEventListener("click", () => openReport(item.dataset.historyId, "history"));
   });
-
-  renderHistoryDetail();
 }
 
-function renderHistoryDetail() {
-  const report = historyReports.find((item) => item.id === selectedHistoryId) || historyReports[0];
-  historyDetail.innerHTML = `
-    <p class="eyebrow">Opened report</p>
-    <h3>${report.title}</h3>
-    <p>${report.summary}</p>
-    <div class="insight-grid">
-      <div>
-        <span class="insight-label">Date</span>
-        <strong>${report.date}</strong>
-        <p>Archived from the Tech Care report history.</p>
-      </div>
-      <div>
-        <span class="insight-label">Focus</span>
-        <strong>${report.focus}</strong>
-        <p>Use the input below to ask AI for deeper context.</p>
-      </div>
-      <div>
-        <span class="insight-label">Actions</span>
-        <strong>${report.actions.length} recommended</strong>
-        <p>${report.actions[0]}</p>
-      </div>
-    </div>
-    <h3>Saved recommendations</h3>
-    <ol class="recommendations">
-      ${report.actions.map((action) => `<li>${action}</li>`).join("")}
-    </ol>
-  `;
+function renderRecents() {
+  recentsList.innerHTML = historyReports
+    .slice(0, 6)
+    .map(
+      (report) =>
+        `<button class="recents-item" type="button" data-recent-id="${escapeHtml(report.id)}">${escapeHtml(report.title)}</button>`
+    )
+    .join("");
+
+  recentsList.querySelectorAll("[data-recent-id]").forEach((item) => {
+    item.addEventListener("click", () => openReport(item.dataset.recentId, "history"));
+  });
 }
 
 function answerQuestion(question, reportTitle) {
-  const lowerQuestion = question.toLowerCase();
-
-  if (lowerQuestion.includes("payment") || lowerQuestion.includes("payout")) {
-    return `For ${reportTitle}, payment questions should be split into invoice adjustment, payout ETA, and reconciliation proof. The highest-impact follow-up is a seller-visible status explanation.`;
+  const q = question.toLowerCase();
+  if (q.includes("payment") || q.includes("payout")) {
+    return `For "${reportTitle}", split payment questions into invoice adjustment, payout ETA, and reconciliation proof. The highest-impact follow-up is a seller-visible status explanation.`;
   }
-
-  if (lowerQuestion.includes("catalog") || lowerQuestion.includes("sku")) {
-    return `For ${reportTitle}, catalog friction is most actionable when the answer includes the rejected attribute, an example fix, and the queue that owns re-review.`;
+  if (q.includes("catalog") || q.includes("sku")) {
+    return `For "${reportTitle}", catalog friction is most actionable when the answer includes the rejected attribute, an example fix, and the queue that owns re-review.`;
   }
-
-  if (lowerQuestion.includes("owner") || lowerQuestion.includes("action")) {
-    return `For ${reportTitle}, assign one owner per recommendation and track repeat contact rate, escalation share, and time-to-next-action as the success metrics.`;
+  if (q.includes("owner") || q.includes("action")) {
+    return `For "${reportTitle}", assign one owner per recommendation and track repeat-contact rate, escalation share, and time-to-next-action.`;
   }
-
-  return `For ${reportTitle}, the strongest next step is to segment the report by seller tenure and contact driver, then compare repeat-contact reduction after the recommended support macro is launched.`;
+  return `For "${reportTitle}", the strongest next step is to segment by seller tenure and contact driver, then compare repeat-contact reduction after the recommended macro launches.`;
 }
 
 function handleQuestion(event, input, target, reportTitle) {
   event.preventDefault();
   const question = input.value.trim();
-
   if (!question) {
     return;
   }
-
   addBubble("user", "You", question, target);
   input.value = "";
 
@@ -388,54 +550,54 @@ function handleQuestion(event, input, target, reportTitle) {
   target.scrollTop = target.scrollHeight;
 
   setTimeout(() => {
-    thinking.innerHTML = `<small>Report AI</small><p>${answerQuestion(question, reportTitle)}</p>`;
+    thinking.innerHTML = `<small>Report AI</small><p>${escapeHtml(answerQuestion(question, reportTitle))}</p>`;
     target.scrollTop = target.scrollHeight;
-  }, 650);
+  }, 620);
 }
 
-navLinks.forEach((link) => {
+routeLinks.forEach((link) => {
   link.addEventListener("click", (event) => {
     event.preventDefault();
     setRoute(link.dataset.route);
   });
 });
 
-routeButtons.forEach((button) => {
-  button.addEventListener("click", () => setRoute(button.dataset.routeButton));
-});
-
 startAnalysisButton.addEventListener("click", () => {
-  setRoute("analysis");
-  setTimeout(() => objectiveInput.focus(), 100);
+  setRoute("home");
+  setTimeout(() => objectiveInput.focus(), 80);
 });
 
 startFlowButton.addEventListener("click", startFlow);
 
+chipButtons.forEach((chip) => {
+  chip.addEventListener("click", () => {
+    objectiveInput.value = chip.dataset.prompt;
+    objectiveInput.focus();
+  });
+});
+
 approveButton.addEventListener("click", () => {
   const agent = agents[currentStep];
-  addBubble("user", "Reviewer", `Approved ${agent.step}.`);
+  addBubble("user", "You", `Approved ${agent.step}.`);
   currentStep += 1;
   updateStepIndicators();
-
   if (currentStep >= agents.length) {
     finishFlow();
     return;
   }
-
   runAgentStep();
 });
 
 cancelButton.addEventListener("click", cancelFlow);
 
-reportQuestionForm.addEventListener("submit", (event) => {
-  handleQuestion(event, reportQuestion, reportQa, "the final Tech Care intelligence brief");
+openLiveReportButton.addEventListener("click", () => {
+  saveLiveReport();
+  openReport("rpt-live", "analytics");
 });
 
-historyQuestionForm.addEventListener("submit", (event) => {
-  const report = historyReports.find((item) => item.id === selectedHistoryId) || historyReports[0];
-  handleQuestion(event, historyQuestion, historyQa, report.title);
-});
+setGreeting();
+renderHistory();
+renderRecents();
 
 const initialRoute = window.location.hash.replace("#", "") || "home";
 setRoute(document.getElementById(initialRoute) ? initialRoute : "home");
-renderHistory();
