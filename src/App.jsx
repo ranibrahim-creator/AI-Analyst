@@ -63,6 +63,8 @@ export default function App() {
   const [edits, setEdits] = useState({});
   const timers = useRef([]);
   const loadedReportId = useRef(null);
+  const scrollRef = useRef(null);
+  const [dockHidden, setDockHidden] = useState(false);
 
   const [historyEdits, setHistoryEdits] = useState({});
   const [pendingNav, setPendingNav] = useState(null);
@@ -250,6 +252,22 @@ export default function App() {
   }
 
   const chatEnabled = viewingHistory || (view === "flow" && step === 4);
+  const isStatusDock = composerMode === "approval" || composerMode === "thinking";
+  const hideStatusDock = isStatusDock && dockHidden;
+
+  function handleMainScroll() {
+    const el = scrollRef.current;
+    if (!el) return;
+    setDockHidden(el.scrollTop > 40);
+  }
+
+  useEffect(() => {
+    setDockHidden(false);
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [step, agentIndex, view, openReportId]);
+
+  const mainPaddingBottom = lifted ? "2.5rem" : hideStatusDock ? "2.5rem" : "11rem";
+  const dockTransform = lifted ? "translateY(-42vh)" : hideStatusDock ? "translateY(12px)" : "translateY(0)";
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#f7f7f5]">
@@ -267,8 +285,10 @@ export default function App() {
         {sidebarCollapsed && <SidebarExpandButton onClick={() => setSidebarCollapsed(false)} />}
 
         <div
+          ref={scrollRef}
+          onScroll={handleMainScroll}
           className="h-full overflow-y-auto px-6 pt-10 sm:px-10"
-          style={{ paddingBottom: lifted ? "2.5rem" : "11rem" }}
+          style={{ paddingBottom: mainPaddingBottom }}
         >
           {viewingHistory && currentReport ? (
             <div>
@@ -310,10 +330,10 @@ export default function App() {
 
         <div
           data-composer-dock
-          className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 sm:px-10 ${
-            lifted ? "transition-transform duration-700 ease-out" : ""
-          }`}
-          style={{ transform: lifted ? "translateY(-42vh)" : "translateY(0)" }}
+          className={`pointer-events-none absolute inset-x-0 bottom-0 z-20 px-6 pb-6 transition-all ease-out sm:px-10 ${
+            lifted ? "duration-700" : "duration-300"
+          } ${hideStatusDock ? "opacity-0" : "opacity-100"}`}
+          style={{ transform: dockTransform }}
         >
           <div className="pointer-events-auto mx-auto max-w-reading">
             <Composer
