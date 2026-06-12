@@ -129,21 +129,50 @@
     animation: none;
   }
 
-  .noon-logo-base,
-  .noon-logo-wink {
+  .noon-idle,
+  .noon-face,
+  .noon-eye-draw,
+  .noon-smile-draw {
     transition: none;
+    animation: none !important;
   }
 }
 
-/* Noon wink line draws in on hover */
-.noon-wink-stroke {
+/* Noon logo → winking face: lines draw in on hover */
+.noon-eye-draw,
+.noon-smile-draw {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 550ms ease-in-out, opacity 300ms ease-in-out;
 }
 
-.group:hover .noon-wink-stroke {
-  stroke-dashoffset: 0;
+.noon-logo:hover .noon-eye-draw,
+.noon-logo:hover .noon-smile-draw {
+  animation: noon-line-draw 480ms ease-in-out forwards;
+}
+
+.noon-logo:hover .noon-face {
+  animation: noon-face-pop 600ms ease-in-out forwards;
+}
+
+@keyframes noon-line-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes noon-face-pop {
+  0% {
+    transform: scale(0.92);
+  }
+  55% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Composer vertical roll — slot-machine text loop (keyframes injected per line-count) */
