@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+  }
+
+  /* Inline-editable rich outputs (Steps 2-4) */
+  [contenteditable="true"] {
+    @apply rounded-md outline-none transition-colors;
+  }
+
+  [contenteditable="true"]:hover {
+    @apply bg-black/[0.03];
+  }
+
+  [contenteditable="true"]:focus {
+    @apply bg-black/[0.04];
+    box-shadow: -10px 0 0 rgba(254, 238, 0, 0.55);
+  }
+}
+
+/* Thin, low-contrast scrollbars to match the minimalist canvas */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.16);
+  border-radius: 9999px;
+}
