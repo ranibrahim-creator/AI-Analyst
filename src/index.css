@@ -146,3 +146,15 @@
   stroke-dashoffset: 0;
 }
 
+/* Composer vertical roll — slot-machine text loop (keyframes injected per line-count) */
+.vertical-roll-track {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vertical-roll-track {
+    animation: none !important;
+    transform: translateY(0) !important;
+  }
+}
+
