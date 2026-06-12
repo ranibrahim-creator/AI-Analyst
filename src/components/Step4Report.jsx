@@ -8,22 +8,32 @@ function recKey(index) {
   return `r-${index}`;
 }
 
-// Step 4 — final report. Static in the live flow; editable when reviewing history.
-export default function Step4Report({ report, qa = [], pending = false, editable = false, edits = {}, onEdit }) {
+// Step 4 — final report. Title editable after analysis; full inline edit when reviewing history.
+export default function Step4Report({
+  report,
+  qa = [],
+  pending = false,
+  editable = false,
+  edits = {},
+  onEdit,
+  onTitleEdit,
+}) {
   function val(key, fallback) {
     return edits[key] ?? fallback;
   }
+
+  const titleEditable = editable || Boolean(onTitleEdit);
 
   return (
     <article className="mx-auto max-w-reading">
       <header className="mb-8">
         <span className="text-[12px] font-medium text-ink-muted">{report.tag}</span>
-        {editable ? (
+        {titleEditable ? (
           <Editable
             key={`title-${report.id}`}
             as="h2"
-            value={val("title", report.title)}
-            onChange={(v) => onEdit?.("title", v)}
+            value={editable ? val("title", report.title) : report.title}
+            onChange={(v) => (editable ? onEdit?.("title", v) : onTitleEdit?.(v))}
             className="mt-1 text-[28px] font-semibold leading-tight tracking-tight text-ink"
           />
         ) : (

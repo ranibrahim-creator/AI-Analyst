@@ -171,6 +171,11 @@ export default function App() {
     }));
   }
 
+  function handleLiveTitleEdit(value) {
+    setLiveReport((prev) => (prev ? { ...prev, title: value } : prev));
+    setHistory((prev) => prev.map((r) => (r.id === "rpt-live" ? { ...r, title: value } : r)));
+  }
+
   function startNewImmediate() {
     timers.current.forEach(clearTimeout);
     setView("flow");
@@ -325,7 +330,9 @@ export default function App() {
                 />
               )}
               {step === 3 && <Step3Analytics onContinue={continueToReport} onBack={() => setStep(2)} />}
-              {step === 4 && liveReport && <Step4Report report={liveReport} qa={qa} pending={pending} />}
+              {step === 4 && liveReport && (
+                <Step4Report report={liveReport} qa={qa} pending={pending} onTitleEdit={handleLiveTitleEdit} />
+              )}
             </div>
           )}
         </div>
