@@ -35,8 +35,6 @@
     --step-ring: rgba(35, 33, 29, 0.1);
     --step-idle-bg: #ffffff;
     --step-idle-ring: rgba(0, 0, 0, 0.12);
-    --toggle-knob-bg: #ffffff;
-    --toggle-knob-icon: #f59e0b;
   }
 
   .dark {
@@ -71,8 +69,6 @@
     --step-ring: rgba(236, 234, 228, 0.12);
     --step-idle-bg: #1a1a18;
     --step-idle-ring: rgba(255, 255, 255, 0.12);
-    --toggle-knob-bg: #2d2a3d;
-    --toggle-knob-icon: #fde68a;
   }
 
   html {
