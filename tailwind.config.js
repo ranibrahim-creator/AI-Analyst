@@ -6,10 +6,6 @@ export default {
     extend: {
       colors: {
         noon: "#FEEE00",
-        brand: {
-          primary: "var(--brand-primary)",
-          secondary: "var(--brand-secondary)",
-        },
         canvas: "#F9F9F9",
         app: "var(--app-bg)",
         main: "var(--main-bg)",

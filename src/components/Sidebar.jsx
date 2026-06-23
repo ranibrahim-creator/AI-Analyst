@@ -1,5 +1,4 @@
 import { useMemo, useRef, useState } from "react";
-import NoonBrandLockup from "./NoonBrandLockup.jsx";
 
 function SearchIcon({ className = "h-3.5 w-3.5" }) {
   return (
@@ -70,7 +69,16 @@ function ThemeToggleIcon({ darkMode }) {
 }
 
 function ProductBrand({ compact = false }) {
-  return <NoonBrandLockup compact={compact} />;
+  return (
+    <div className={`min-w-0 leading-none ${compact ? "" : "px-1"}`}>
+      <div className={`font-semibold leading-tight text-ink ${compact ? "text-[12px]" : "text-[13px]"}`}>
+        AI Analyst
+      </div>
+      <div className={`mt-0.5 leading-tight text-ink-muted ${compact ? "text-[10px]" : "text-[11px]"}`}>
+        Tech Care
+      </div>
+    </div>
+  );
 }
 
 function HistorySearch({ value, onChange }) {
@@ -165,10 +173,8 @@ export default function Sidebar({
       }`}
     >
       <div className={`flex h-full min-w-[248px] flex-col px-2 py-2 ${collapsed ? "invisible" : ""}`}>
-        <div className="mb-2 flex items-center justify-between gap-2 px-1 pt-0.5">
-          <div className="min-w-0 flex-1">
-            <ProductBrand />
-          </div>
+        <div className="mb-2 flex items-start justify-between gap-2 px-1 pt-0.5">
+          <ProductBrand />
           <button
             type="button"
             onClick={onToggleCollapse}
@@ -185,7 +191,7 @@ export default function Sidebar({
           onClick={onNew}
           className="mx-1 mt-1.5 inline-flex w-[calc(100%-8px)] items-center justify-center gap-1.5 rounded-md bg-[var(--button-primary)] px-2.5 py-1.5 text-[12px] font-medium text-[var(--button-primary-text)] shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-opacity hover:opacity-90"
         >
-          <SparkleIcon className="h-3.5 w-3.5 text-[var(--button-primary-text)] opacity-80" />
+          <SparkleIcon className="h-3.5 w-3.5 opacity-80" />
           New analysis
         </button>
 
@@ -213,7 +219,7 @@ export default function Sidebar({
                   >
                     <span
                       data-history-dot
-                      className={`h-1 w-1 shrink-0 rounded-full ${active ? "bg-noon" : "bg-ink-muted"}`}
+                      className={`h-1 w-1 shrink-0 rounded-full ${active ? "bg-ink" : "bg-ink-muted"}`}
                     />
                     <span className="truncate">{report.title}</span>
                   </button>

@@ -4,23 +4,21 @@
 
 @layer base {
   :root {
-    --brand-primary: #feee00;
-    --brand-secondary: #0a0a0a;
-    --app-bg: #f5f5f3;
+    --app-bg: #f7f7f5;
     --main-bg: #ffffff;
-    --sidebar-bg: #f0f0ee;
+    --sidebar-bg: #f4f4f2;
     --surface-elevated: #ffffff;
     --suggestion-bg: #fafaf8;
-    --suggestion-hover: #f0f0ee;
-    --border-subtle: rgba(10, 10, 10, 0.08);
-    --border-faint: rgba(10, 10, 10, 0.06);
-    --hover-subtle: rgba(10, 10, 10, 0.04);
-    --hover-medium: rgba(10, 10, 10, 0.07);
-    --ink: #0a0a0a;
-    --ink-soft: #3d3d3d;
-    --ink-muted: #737373;
-    --ink-faint: #a3a3a3;
-    --line: #e8e8e6;
+    --suggestion-hover: #f4f4f2;
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-faint: rgba(0, 0, 0, 0.06);
+    --hover-subtle: rgba(0, 0, 0, 0.04);
+    --hover-medium: rgba(0, 0, 0, 0.06);
+    --ink: #23211d;
+    --ink-soft: #56524b;
+    --ink-muted: #8c887f;
+    --ink-faint: #b8b4ab;
+    --line: #ece9e3;
     --composer-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     --composer-shadow-focus: 0 4px 16px rgba(0, 0, 0, 0.07);
     --chat-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -30,21 +28,19 @@
     --editable-hover: rgba(0, 0, 0, 0.02);
     --editable-focus: rgba(0, 0, 0, 0.025);
     --editable-ring: rgba(0, 0, 0, 0.06);
-    --user-bubble: #0a0a0a;
+    --user-bubble: #23211d;
     --user-bubble-text: #ffffff;
-    --button-primary: #0a0a0a;
+    --button-primary: #23211d;
     --button-primary-text: #ffffff;
-    --step-ring: rgba(254, 238, 0, 0.35);
+    --step-ring: rgba(35, 33, 29, 0.1);
     --step-idle-bg: #ffffff;
     --step-idle-ring: rgba(0, 0, 0, 0.12);
   }
 
   .dark {
-    --brand-primary: #feee00;
-    --brand-secondary: #ffffff;
-    --app-bg: #0a0a0a;
-    --main-bg: #111111;
-    --sidebar-bg: #0d0d0d;
+    --app-bg: #111110;
+    --main-bg: #1a1a18;
+    --sidebar-bg: #161614;
     --surface-elevated: #222220;
     --suggestion-bg: #1f1f1d;
     --suggestion-hover: #262624;
@@ -52,11 +48,11 @@
     --border-faint: rgba(255, 255, 255, 0.06);
     --hover-subtle: rgba(255, 255, 255, 0.05);
     --hover-medium: rgba(255, 255, 255, 0.08);
-    --ink: #f5f5f5;
-    --ink-soft: #c9c9c9;
-    --ink-muted: #8f8f8f;
-    --ink-faint: #5c5c5c;
-    --line: #262626;
+    --ink: #eceae4;
+    --ink-soft: #b0aca4;
+    --ink-muted: #8a8680;
+    --ink-faint: #5c5954;
+    --line: #2e2e2c;
     --composer-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
     --composer-shadow-focus: 0 4px 18px rgba(0, 0, 0, 0.45);
     --chat-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
@@ -66,11 +62,11 @@
     --editable-hover: rgba(255, 255, 255, 0.04);
     --editable-focus: rgba(255, 255, 255, 0.06);
     --editable-ring: rgba(255, 255, 255, 0.1);
-    --user-bubble: #f5f5f5;
-    --user-bubble-text: #0a0a0a;
-    --button-primary: #feee00;
-    --button-primary-text: #0a0a0a;
-    --step-ring: rgba(254, 238, 0, 0.25);
+    --user-bubble: #eceae4;
+    --user-bubble-text: #111110;
+    --button-primary: #eceae4;
+    --button-primary-text: #111110;
+    --step-ring: rgba(236, 234, 228, 0.12);
     --step-idle-bg: #1a1a18;
     --step-idle-ring: rgba(255, 255, 255, 0.12);
   }
@@ -211,126 +207,9 @@
   .noon-bowl,
   .noon-dot,
   .noon-wink,
-  .noon-glyph,
-  .noon-lockup,
-  .noon-lockup-mark,
-  .noon-draw-arc,
-  .noon-draw-fill,
-  .noon-draw-dot,
-  .noon-lockup-arabic,
-  .noon-lockup-word,
-  .noon-lockup-sub,
-  .noon-logo {
+  .noon-glyph {
     transition: none;
     animation: none !important;
-  }
-}
-
-/* Noon nav lockup — page-load SVG draw-in + hover pulse */
-.noon-lockup {
-  animation: brand-enter 680ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.noon-lockup-mark {
-  color: var(--brand-primary);
-}
-
-.noon-lockup:hover .noon-lockup-mark {
-  animation: noon-mark-pulse 1.8s ease-in-out infinite;
-}
-
-.noon-draw-arc {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: noon-path-draw 900ms cubic-bezier(0.22, 1, 0.36, 1) 120ms forwards;
-}
-
-.noon-draw-fill {
-  animation: brand-fade-in 500ms ease 520ms forwards;
-}
-
-.noon-draw-dot {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation:
-    brand-fade-in 420ms ease 680ms forwards,
-    noon-dot-drop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 680ms both;
-}
-
-.noon-lockup-arabic,
-.noon-lockup-word,
-.noon-lockup-sub {
-  animation: brand-fade-slide 520ms ease forwards;
-}
-
-.noon-lockup-arabic {
-  animation-delay: 760ms;
-}
-
-.noon-lockup-word {
-  animation-delay: 840ms;
-}
-
-.noon-lockup-sub {
-  animation-delay: 920ms;
-}
-
-.noon-logo {
-  animation: brand-enter 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes brand-enter {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes brand-fade-in {
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes brand-fade-slide {
-  from {
-    opacity: 0;
-    transform: translateX(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes noon-path-draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes noon-dot-drop {
-  from {
-    transform: translateY(-4px);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-@keyframes noon-mark-pulse {
-  0%,
-  100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 0 transparent);
-  }
-  50% {
-    transform: scale(1.06);
-    filter: drop-shadow(0 0 10px rgba(254, 238, 0, 0.4));
   }
 }
 
