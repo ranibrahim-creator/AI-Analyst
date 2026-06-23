@@ -199,6 +199,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .noon-emblem .opacity-0 {
+    transition: none;
+  }
+
   .ai-aura--idle,
   .ai-aura--think {
     animation: none;
