@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Composer from "./Composer.jsx";
-import NoonBrandLogo from "./NoonBrandLogo.jsx";
+import NoonEmblem from "./NoonEmblem.jsx";
 
 function SuggestionIcon({ type }) {
   const className = "h-[18px] w-[18px] shrink-0 text-ink-muted";
@@ -73,7 +73,7 @@ export default function Step1Discovery({ prompt, onPromptChange, onStart, sugges
 
   return (
     <div className="mx-auto flex min-h-[62vh] w-full max-w-xl flex-col items-center justify-center px-2 text-center">
-      <NoonBrandLogo size="hero" className="mb-5" />
+      <NoonEmblem size="hero" className="mb-5" />
 
       <h1 className="text-[26px] font-semibold tracking-tight text-ink sm:text-[28px]">
         How can I help you today?

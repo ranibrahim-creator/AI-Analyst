@@ -203,55 +203,6 @@
   .ai-aura--think {
     animation: none;
   }
-
-  .noon-bowl,
-  .noon-dot,
-  .noon-wink,
-  .noon-glyph {
-    transition: none;
-    animation: none !important;
-  }
-}
-
-/* Noon logo → wink: yellow glyph morphs into a playful winking face on hover */
-.noon-logo .noon-bowl,
-.noon-logo .noon-dot {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.noon-wink {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-}
-
-.noon-logo:hover .noon-wink {
-  animation: noon-line-draw 450ms ease-in-out 140ms forwards;
-}
-
-.noon-logo:hover .noon-glyph {
-  animation: noon-face-nudge 550ms ease-in-out forwards;
-}
-
-@keyframes noon-face-nudge {
-  0% {
-    transform: rotate(0deg);
-  }
-  40% {
-    transform: rotate(-4deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes noon-line-draw {
-  from {
-    stroke-dashoffset: 1;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
 }
 
 /* Composer vertical roll — slot-machine text loop (keyframes injected per line-count) */
