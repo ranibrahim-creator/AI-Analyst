@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="noon emblem">
+  <!--
+    noon emblem  thick 3/4 annular arc (gap top-left, 912 o'clock)
+    + tilted parallelogram dot. Concentric outer/inner circles, flat gap ends.
+  -->
+  <g fill="#000000">
+    <!-- Bowl: outer R=27, inner R=16, center (40, 48) -->
+    <path
+      d="
+        M 40 21
+        A 27 27 0 1 1 13 48
+        L 24 48
+        A 16 16 0 1 0 40 32
+        Z
+      "
+    />
+
+    <!-- Dot: horizontal top/bottom, sides slanted right -->
+    <path
+      d="
+        M 27.5 11.5
+        L 36.5 8.5
+        L 40.5 15
+        L 31.5 18
+        Z
+      "
+    />
+  </g>
+</svg>
